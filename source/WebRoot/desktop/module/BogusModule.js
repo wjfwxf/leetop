@@ -7,8 +7,8 @@
 
 var windowIndex = 0;
 
-Ext.define('MyDesktop.BogusModule', {
-    extend: 'Ext.ux.desktop.Module',
+Ext.define('Leetop.module.BogusModule', {
+    extend: 'Leetop.lib.Module',
 
     init : function(){
         this.launcher = {

@@ -5,8 +5,8 @@
  * http://www.sencha.com/license
  */
 
-Ext.define('MyDesktop.Notepad', {
-    extend: 'Ext.ux.desktop.Module',
+Ext.define('Leetop.module.Notepad', {
+    extend: 'Leetop.lib.Module',
 
     requires: [
         'Ext.form.field.HtmlEditor'

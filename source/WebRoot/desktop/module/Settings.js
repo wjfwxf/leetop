@@ -5,7 +5,7 @@
  * http://www.sencha.com/license
  */
 
-Ext.define('MyDesktop.Settings', {
+Ext.define('Leetop.module.Settings', {
     extend: 'Ext.window.Window',
 
     uses: [
@@ -15,9 +15,9 @@ Ext.define('MyDesktop.Settings', {
         'Ext.layout.container.Anchor',
         'Ext.layout.container.Border',
 
-        'Ext.ux.desktop.Wallpaper',
+        'Leetop.lib.Wallpaper',
 
-        'MyDesktop.WallpaperModel'
+        'Leetop.module.WallpaperModel'
     ],
 
     //layout: 'anchor',
@@ -134,7 +134,7 @@ Ext.define('MyDesktop.Settings', {
                 scope: this
             },
             store: new Ext.data.TreeStore({
-                model: 'MyDesktop.WallpaperModel',
+                model: 'Leetop.module.WallpaperModel',
                 root: {
                     text:'Wallpaper',
                     expanded: true,
