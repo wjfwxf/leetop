@@ -1,4 +1,4 @@
-Ext.define('Leetop.module.browser.AddressField', {
+Ext.define('Leetop.browser.AddressField', {
     extend: 'Ext.form.field.ComboBox',
     
     alias: 'widget.addressfield',

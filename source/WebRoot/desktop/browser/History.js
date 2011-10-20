@@ -1,5 +1,5 @@
 
-Ext.define('MyDesktop.browser.History', {
+Ext.define('Leetop.browser.History', {
     extend: 'Ext.data.Model',
     fields: [
        { name : 'id'},
