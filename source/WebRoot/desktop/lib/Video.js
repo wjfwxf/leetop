@@ -13,7 +13,7 @@
  * http://developer.mozilla.org/En/HTML/Element/Video
  */
 
-Ext.define('Ext.ux.desktop.Video', {
+Ext.define('Leetop.lib.Video', {
     extend: 'Ext.panel.Panel',
 
     alias: 'widget.video',

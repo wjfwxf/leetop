@@ -1,4 +1,4 @@
-Ext.define('Ext.ux.desktop.Desktop', {
+Ext.define('Leetop.lib.Desktop', {
     extend: 'Ext.panel.Panel',
 
     alias: 'widget.desktop',
@@ -9,12 +9,13 @@ Ext.define('Ext.ux.desktop.Desktop', {
         'Ext.view.View', // dataview
         'Ext.window.Window',
 
-        'Ext.ux.desktop.TaskBar',
-        'Ext.ux.desktop.Wallpaper',
-        'Ext.ux.desktop.FitAllLayout',
+        'Leetop.lib.TaskBar',
+        'Leetop.lib.Wallpaper',
+        'Leetop.lib.FitAllLayout',
         'Ext.ux.DataView.DragSelector',
         'Ext.ux.DataView.LabelEditor',
-        'Ext.ux.DataView.Draggable'
+        'Ext.ux.DataView.Draggable',
+        'Ext.ux.DataView.Animated'
     ],
 
     activeWindowCls: 'ux-desktop-active-win',
@@ -71,7 +72,7 @@ Ext.define('Ext.ux.desktop.Desktop', {
         me.windowMenu = new Ext.menu.Menu(me.createWindowMenu());
         me.quickStartMenu = new Ext.menu.Menu(me.createQuicStartMenu());
         me.startContextMenu = new Ext.menu.Menu(me.createStartContextMenu());
-        me.bbar = me.taskbar = new Ext.ux.desktop.TaskBar(me.taskbarConfig);
+        me.bbar = me.taskbar = new Leetop.lib.TaskBar(me.taskbarConfig);
         me.taskbar.windowMenu = me.windowMenu;
         me.taskbar.quickStartMenu = me.quickStartMenu;
         me.taskbar.startMenu.startContextMenu = me.startContextMenu;
@@ -210,8 +211,9 @@ Ext.define('Ext.ux.desktop.Desktop', {
                       Ext.create('Ext.ux.DataView.DragSelector', {}),
                       Ext.create('Ext.ux.DataView.LabelEditor', {dataIndex: 'name',
                     	  										 labelSelector: me.labelSelector
-                    	  										})/*,
-                      Ext.create('Ext.ux.DataView.Draggable', {})*/
+                    	  										})
+                      //Ext.create('Ext.ux.DataView.Animated')  										
+                      //Ext.create('Ext.ux.DataView.Draggable', {})
                   ],
             listeners : {
             	//beforerefresh : me.initShortcutEvent,
@@ -374,14 +376,15 @@ Ext.define('Ext.ux.desktop.Desktop', {
     
     sortShortCut : function(p){
     	var me = this;
-    	if(me.sortType == 'DESC' &&  p == me.sortField){
-    		me.shortcutsView.store.sort(p, 'ASC');
-    		me.sortType = 'ASC';
-    	}else{
+    	if(me.sortType == 'ASC' &&  p == me.sortField){
     		me.shortcutsView.store.sort(p, 'DESC');
     		me.sortType = 'DESC';
+    	}else{
+    		me.shortcutsView.store.sort(p, 'ASC');
+    		me.sortType = 'ASC';
     	}
     	me.sortField = p;
+    	me.initShortcutEvent();
     },
 
     createWindowMenu: function () {
@@ -646,7 +649,7 @@ Ext.define('Ext.ux.desktop.Desktop', {
     	//this.shortcutsView.refresh();
     	me.el.mask('正在刷新页面...');
     	me.shortcutsView.store.loadData(me.app.shortcutsData);
-    	me.shortcutsView.store.sort('index','ASC');
+    	me.shortcutsView.store.sort('index', 'ASC');
     	me.el.unmask();
     },
     getWallpaper: function () {

@@ -5,7 +5,7 @@
  * http://www.sencha.com/license
  */
 
-Ext.define('Ext.ux.desktop.Module', {
+Ext.define('Leetop.lib.Module', {
     mixins: {
         observable: 'Ext.util.Observable'
     },

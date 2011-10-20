@@ -5,7 +5,7 @@
  * http://www.sencha.com/license
  */
 
-Ext.define('Ext.ux.desktop.StartMenu', {
+Ext.define('Leetop.lib.StartMenu', {
     extend: 'Ext.panel.Panel',
 
     requires: [
