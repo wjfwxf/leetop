@@ -842,7 +842,7 @@ Ext.define('Leetop.lib.Desktop', {
     		var rule = Ext.util.CSS.getRule('.'+iconCls);
     		if(rule){
 		    	var cssText = "."+iconCls+"-small {" +
-									"background: url('/Desktop/makeIcon?url="+rule.style.backgroundImage+"') repeat;}";
+									"background: url('"+ctx+"/makeIcon?url="+rule.style.backgroundImage+"') repeat;}";
 		    	Ext.util.CSS.createStyleSheet(cssText);
 	    	}
     	}
