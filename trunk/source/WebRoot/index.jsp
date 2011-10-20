@@ -1,28 +1,47 @@
-<%@ page language="java" import="java.util.*" pageEncoding="ISO-8859-1"%>
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%
-String path = request.getContextPath();
-String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort();
+	request.setAttribute("ctx",request.getContextPath());
 %>
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-  <head>
-    <base href="<%=basePath%>">
-    
-    <title>My JSP 'index.jsp' starting page</title>
-	<meta http-equiv="pragma" content="no-cache">
-	<meta http-equiv="cache-control" content="no-cache">
-	<meta http-equiv="expires" content="0">    
-	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
-	<meta http-equiv="description" content="This is my page">
-	<!--
-	<link rel="stylesheet" type="text/css" href="styles.css">
-	-->
-  </head>
-  
-  <body>
-  <%= path%>
-  <%= basePath%>
-    This is my JSP page. <br>
-  </body>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>系统桌面</title>
+
+	<link rel="shortcut icon" href="http://mat1.gtimg.com/www/icon/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="${ctx}/resources/css/ext-all.css" />
+    <link rel="stylesheet" type="text/css" href="${ctx}/desktop/resource/css/desktop.css" />
+    <link rel="stylesheet" type="text/css" href="${ctx}/desktop/resource/css/shortcut.css" />
+    <link rel="stylesheet" type="text/css" href="${ctx}/desktop/resource/css/icon.css" />
+    <script type="text/javascript" src="${ctx}/ext-all-debug.js"></script>
+    <script type="text/javascript" src="${ctx}/locale/ext-lang-zh_CN.js"></script>
+    <script type="text/javascript">
+    	Ext.Loader.setConfig({
+    		enabled: true
+    	});
+        Ext.Loader.setPath({
+            "Ext.ux" : "${ctx}/ux",
+            "Leetop.desktop" : "${ctx}/desktop",
+            "Leetop" : "${ctx}/desktop"
+        });
+
+        Ext.require("Leetop.desktop.App");
+		
+        var myDesktopApp,ctx = "${ctx}";
+        Ext.onReady(function () {
+            myDesktopApp = new Leetop.desktop.App({
+            	user : "李球"
+            });
+        });
+        
+    </script>
+</head>
+
+<body>
+
+    <a href="http://www.sencha.com" target="_blank" alt="Powered by Ext JS"
+       id="poweredby" >
+       <div>
+       </div>
+   </a>
+</body>
 </html>
