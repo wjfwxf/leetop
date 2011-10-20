@@ -6,17 +6,17 @@
  */
 
 /**
- * @class Ext.ux.desktop.TaskBar
+ * @class Leetop.lib.TaskBar
  * @extends Ext.toolbar.Toolbar
  */
-Ext.define('Ext.ux.desktop.TaskBar', {
+Ext.define('Leetop.lib.TaskBar', {
     extend: 'Ext.toolbar.Toolbar', // TODO - make this a basic hbox panel...
 
     requires: [
         'Ext.button.Button',
         'Ext.resizer.Splitter',
         'Ext.menu.Menu',
-        'Ext.ux.desktop.StartMenu',
+        'Leetop.lib.StartMenu',
         'Ext.ux.BoxReorderer'
     ],
 
@@ -34,7 +34,7 @@ Ext.define('Ext.ux.desktop.TaskBar', {
         var me = this;
         
 
-        me.startMenu = new Ext.ux.desktop.StartMenu(me.startConfig);
+        me.startMenu = new Leetop.lib.StartMenu(me.startConfig);
 
         me.quickStart = new Ext.toolbar.Toolbar(me.getQuickStart());
 
@@ -252,11 +252,11 @@ Ext.define('Ext.ux.desktop.TaskBar', {
 });
 
 /**
- * @class Ext.ux.desktop.TrayClock
+ * @class Leetop.lib.TrayClock
  * @extends Ext.toolbar.TextItem
  * This class displays a clock on the toolbar.
  */
-Ext.define('Ext.ux.desktop.TrayClock', {
+Ext.define('Leetop.lib.TrayClock', {
     extend: 'Ext.toolbar.TextItem',
 
     alias: 'widget.trayclock',

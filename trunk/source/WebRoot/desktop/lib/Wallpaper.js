@@ -6,11 +6,11 @@
  */
 
 /**
- * @class Ext.ux.desktop.Wallpaper
+ * @class Leetop.lib.Wallpaper
  * @extends Ext.Component
  * <p>This component renders an image that stretches to fill the component.</p>
  */
-Ext.define('Ext.ux.desktop.Wallpaper', {
+Ext.define('Leetop.lib.Wallpaper', {
     extend: 'Ext.Component',
 
     alias: 'widget.wallpaper',

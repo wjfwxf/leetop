@@ -6,15 +6,16 @@
  */
 
 /**
- * @class Ext.ux.desktop.ShortcutModel
+ * @class Leetop.lib.ShortcutModel
  * @extends Ext.data.Model
  * This model defines the minimal set of fields for desktop shortcuts.
  */
-Ext.define('Ext.ux.desktop.ShortcutModel', {
+Ext.define('Leetop.lib.ShortcutModel', {
     extend: 'Ext.data.Model',
     fields: [
        { name: 'name' },
        { name: 'iconCls' },
-       { name: 'module' }
+       { name: 'module' },
+       { name: 'index' }
     ]
 });

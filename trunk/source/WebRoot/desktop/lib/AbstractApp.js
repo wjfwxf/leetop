@@ -5,7 +5,7 @@
  * http://www.sencha.com/license
  */
 
-Ext.define('Ext.ux.desktop.App', {
+Ext.define('Leetop.lib.AbstractApp', {
     mixins: {
         observable: 'Ext.util.Observable'
     },
@@ -13,7 +13,7 @@ Ext.define('Ext.ux.desktop.App', {
     requires: [
         'Ext.container.Viewport',
 
-        'Ext.ux.desktop.Desktop'
+        'Leetop.lib.Desktop'
     ],
 
     isReady: false,
@@ -48,7 +48,7 @@ Ext.define('Ext.ux.desktop.App', {
             me.initModules(me.modules);
         }
         desktopCfg = me.getDesktopConfig();
-        me.desktop = new Ext.ux.desktop.Desktop(desktopCfg);
+        me.desktop = new Leetop.lib.Desktop(desktopCfg);
 
         me.viewport = new Ext.container.Viewport({
             layout: 'fit',

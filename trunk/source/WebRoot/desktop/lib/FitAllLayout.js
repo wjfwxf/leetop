@@ -6,12 +6,12 @@
  */
 
 /**
- * @class Ext.ux.desktop.FitAllLayout
+ * @class Leetop.lib.FitAllLayout
  * @extends Ext.layout.container.AbstractFit
  * <p>This layout applies a "fit" layout to all items, overlaying them on top of each
  * other.</p>
  */
-Ext.define('Ext.ux.desktop.FitAllLayout', {
+Ext.define('Leetop.lib.FitAllLayout', {
     extend: 'Ext.layout.container.AbstractFit',
     alias: 'layout.fitall',
 
