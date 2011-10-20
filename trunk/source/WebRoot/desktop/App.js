@@ -5,25 +5,25 @@
  * http://www.sencha.com/license
  */
 
-Ext.define('MyDesktop.App', {
-    extend: 'Ext.ux.desktop.App',
+Ext.define('Leetop.desktop.App', {
+    extend: 'Leetop.lib.AbstractApp',
 
     requires: [
         'Ext.window.MessageBox',
-        'Ext.ux.desktop.ShortcutModel',
-        'MyDesktop.SystemStatus',
-        'MyDesktop.VideoWindow',
-        'MyDesktop.GridWindow',
-        'MyDesktop.TabWindow',
-        'MyDesktop.AccordionWindow',
-        'MyDesktop.Notepad',
-        'MyDesktop.BogusMenuModule',
-        'MyDesktop.BogusModule',
-        'MyDesktop.Settings',
-        'MyDesktop.Douban',
-        'MyDesktop.QQMap',
-        'MyDesktop.browser.Browser',
-        'MyDesktop.QQMusic'
+        'Leetop.lib.ShortcutModel',
+        'Leetop.module.SystemStatus',
+        'Leetop.module.VideoWindow',
+        'Leetop.module.GridWindow',
+        'Leetop.module.TabWindow',
+        'Leetop.module.AccordionWindow',
+        'Leetop.module.Notepad',
+        'Leetop.module.BogusMenuModule',
+        'Leetop.module.BogusModule',
+        'Leetop.module.Settings',
+        'Leetop.module.Douban',
+        'Leetop.module.QQMap',
+        'Leetop.browser.Browser',
+        'Leetop.module.QQMusic'
     ],
     
     init: function() {
@@ -37,19 +37,19 @@ Ext.define('MyDesktop.App', {
 
     getModules : function(){
         return [
-            new MyDesktop.VideoWindow(),
-            //new MyDesktop.Blockalanche(),
-            new MyDesktop.SystemStatus(),
-            new MyDesktop.GridWindow(),
-            new MyDesktop.TabWindow(),
-            new MyDesktop.AccordionWindow(),
-            new MyDesktop.Notepad(),
-            //new MyDesktop.BogusMenuModule(),
-           // new MyDesktop.BogusModule(),
-            new MyDesktop.Douban(),
-            new MyDesktop.QQMap(),
-            new MyDesktop.browser.Browser(),
-            new MyDesktop.QQMusic()
+            new Leetop.module.VideoWindow(),
+            //new Leetop.module.Blockalanche(),
+            new Leetop.module.SystemStatus(),
+            new Leetop.module.GridWindow(),
+            new Leetop.module.TabWindow(),
+            new Leetop.module.AccordionWindow(),
+            new Leetop.module.Notepad(),
+            //new Leetop.module.BogusMenuModule(),
+           // new Leetop.module.BogusModule(),
+            new Leetop.module.Douban(),
+            new Leetop.module.QQMap(),
+            new Leetop.browser.Browser(),
+            new Leetop.module.QQMusic()
         ];
     },
     
@@ -89,7 +89,7 @@ Ext.define('MyDesktop.App', {
             ],
 
             shortcuts: Ext.create('Ext.data.Store', {
-                model: 'Ext.ux.desktop.ShortcutModel',
+                model: 'Leetop.lib.ShortcutModel',
                 data: me.shortcutsData
             }),
 
@@ -157,7 +157,7 @@ Ext.define('MyDesktop.App', {
     },
 
     onSettings: function () {
-        var dlg = new MyDesktop.Settings({
+        var dlg = new Leetop.module.Settings({
             desktop: this.desktop,
             iconCls : 'icon-personality'
         });
