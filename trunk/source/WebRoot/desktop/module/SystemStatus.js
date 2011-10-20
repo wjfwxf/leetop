@@ -5,8 +5,8 @@
 * http://www.sencha.com/license
 */
 
-Ext.define('MyDesktop.SystemStatus', {
-    extend: 'Ext.ux.desktop.Module',
+Ext.define('Leetop.module.SystemStatus', {
+    extend: 'Leetop.lib.Module',
 
     requires: [
         'Ext.chart.*'

@@ -7,8 +7,8 @@
 
 // From code originally written by David Davis (http://www.sencha.com/blog/html5-video-canvas-and-ext-js/)
 
-Ext.define('MyDesktop.QQMap', {
-    extend: 'Ext.ux.desktop.Module',
+Ext.define('Leetop.module.QQMap', {
+    extend: 'Leetop.lib.Module',
 
     id:'qqmap',
     windowId: 'qqmap-window',

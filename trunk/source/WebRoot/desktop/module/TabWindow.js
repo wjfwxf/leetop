@@ -5,8 +5,8 @@
  * http://www.sencha.com/license
  */
 
-Ext.define('MyDesktop.TabWindow', {
-    extend: 'Ext.ux.desktop.Module',
+Ext.define('Leetop.module.TabWindow', {
+    extend: 'Leetop.lib.Module',
 
     requires: [
         'Ext.tab.Panel'

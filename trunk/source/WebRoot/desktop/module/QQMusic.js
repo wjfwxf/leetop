@@ -7,8 +7,8 @@
 
 // From code originally written by David Davis (http://www.sencha.com/blog/html5-video-canvas-and-ext-js/)
 
-Ext.define('MyDesktop.QQMusic', {
-    extend: 'Ext.ux.desktop.Module',
+Ext.define('Leetop.module.QQMusic', {
+    extend: 'Leetop.lib.Module',
 
     id:'qqmusic',
     windowId: 'qqmusic-window',

@@ -7,11 +7,11 @@
 
 // From code originally written by David Davis (http://www.sencha.com/blog/html5-video-canvas-and-ext-js/)
 
-Ext.define('MyDesktop.VideoWindow', {
-    extend: 'Ext.ux.desktop.Module',
+Ext.define('Leetop.module.VideoWindow', {
+    extend: 'Leetop.lib.Module',
 
     uses: [
-        'Ext.ux.desktop.Video'
+        'Leetop.lib.Video'
     ],
 
     id:'video',
