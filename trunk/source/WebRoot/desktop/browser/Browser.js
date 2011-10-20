@@ -1,5 +1,5 @@
 
-Ext.define('MyDesktop.browser.Browser', {
+Ext.define('Leetop.module.browser.Browser', {
     extend: 'Ext.ux.desktop.Module',
 
     id:'browser',
@@ -11,8 +11,8 @@ Ext.define('MyDesktop.browser.Browser', {
     blankAddress :  'http://www.baidu.com',
     
     requires: [
-    	'MyDesktop.browser.AddressField',
-    	'MyDesktop.browser.History',
+    	'Leetop.module.browser.AddressField',
+    	'Leetop.module.browser.History',
     	'Ext.ux.TabReorderer',
     	'Ext.ux.TabScrollerMenu'
     ],
@@ -33,7 +33,7 @@ Ext.define('MyDesktop.browser.Browser', {
 	createHistorys : function(){
 		var me = this;
 		me.historys = Ext.create('Ext.data.Store',{
-        	model : 'MyDesktop.browser.History'
+        	model : 'Leetop.module.browser.History'
         });
         return me.historys;
 	},
@@ -289,7 +289,7 @@ Ext.define('MyDesktop.browser.Browser', {
     
 	createAddressField : function(){
 		var me = this;
-		me.address = Ext.create('MyDesktop.browser.AddressField',{
+		me.address = Ext.create('Leetop.module.browser.AddressField',{
             		store : me.createHistorys(),
             		browser : me,
             		flex : 1,
