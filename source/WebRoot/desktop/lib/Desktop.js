@@ -188,7 +188,7 @@ Ext.define('Leetop.lib.Desktop', {
 			        	 		   			handler : function(){
 			        	 		   				Ext.Msg.alert('这是一个文件夹!');
 			        	 		   			}
-			        	 		   		})
+			        	 		   		});
 			        	 		   },
 		  				 	  	   scope: me
 			      			   },{ text: '文档',
