@@ -5,7 +5,7 @@
  * http://www.sencha.com/license
  */
 
-Ext.define('Leetop.desktop.App', {
+Ext.define('Leetop.App', {
     extend: 'Leetop.lib.AbstractApp',
 
     requires: [
