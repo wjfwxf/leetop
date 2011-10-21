@@ -37,7 +37,7 @@ Ext.define('Leetop.lib.Desktop', {
     
     labelSelector: 'ux-desktop-shortcut-text-inner',
     
-    shortcutsRows : 9,
+    shortcutsCols : 9,
     
     shortcutsPadding : 70,
     
@@ -76,11 +76,10 @@ Ext.define('Leetop.lib.Desktop', {
         me.taskbar.windowMenu = me.windowMenu;
         me.taskbar.quickStartMenu = me.quickStartMenu;
         me.taskbar.startMenu.startContextMenu = me.startContextMenu;
-        
 
         me.windows = new Ext.util.MixedCollection();
-
         me.contextMenu = new Ext.menu.Menu(me.createDesktopMenu());
+        me.windowHeaderContextMenu = new Ext.menu.Menu(me.createWindowHeaderContextMenu());
         me.shortCutItemMenu = new Ext.menu.Menu(me.createShortCutItemMenu());
 
         me.items = [
@@ -102,12 +101,12 @@ Ext.define('Leetop.lib.Desktop', {
     afterRender: function () {
         var me = this;
         me.callParent();
-        me.el.on('contextmenu', me.onDesktopMenu, me);
+        me.el.on('contextmenu', me.onDesktopContextMenu, me);
     },
     
     initView : function(){
     	var me = this;
-    	me.shortcutsRows = Math.floor((me.getHeight() - me.taskbar.getHeight()) / me.shortcutsPadding);
+    	me.shortcutsCols = Math.floor((me.getHeight() - me.taskbar.getHeight()) / me.shortcutsPadding);
     	me.add(me.createDataView());
     	me.shortcutsView = me.items.getAt(1);
     	me.initShortcutEvent();
@@ -115,7 +114,7 @@ Ext.define('Leetop.lib.Desktop', {
     
     refreshView : function(){
     	var me = this;
-    	me.shortcutsRows = Math.floor(me.shortcutsView.getHeight() / me.shortcutsPadding);
+    	me.shortcutsCols = Math.floor(me.shortcutsView.getHeight() / me.shortcutsPadding);
 		me.shortcutsView.tpl = new Ext.XTemplate(me.createShortcutTpl());
 		me.shortcutsView.refresh();
 		me.initShortcutEvent();
@@ -133,7 +132,7 @@ Ext.define('Leetop.lib.Desktop', {
 	      	                	'<div class="ux-desktop-shortcut-text-inner">{name}</div>',
 	      	                '</div>',
 	      	            '</div>',
-	      	            '<tpl if="xindex % ' + this.shortcutsRows + ' == 0">',
+	      	            '<tpl if="xindex % ' + this.shortcutsCols + ' == 0">',
 	      	            	'</div><div class="ux-desktop-shortcut-column">',
 	      	            '</tpl>',   
 	              '</tpl>',
@@ -373,7 +372,33 @@ Ext.define('Leetop.lib.Desktop', {
          
         return ret;
     },
-    
+    createWindowHeaderContextMenu: function () {
+        var me = this;
+        return {
+        	items : [{
+        				text : '还&nbsp;&nbsp;&nbsp;原',
+        				handler : function(){
+        					me.restoreWindow(me.getActiveWindow());
+        				}
+        			},{
+        				text : '最小化',
+        				handler : function(){
+        					me.minimizeWindow(me.getActiveWindow());
+        					me.updateActiveWindow();
+        				}
+        			},{
+        				text : '最大化',
+        				handler : function(){
+        					me.getActiveWindow().maximize(); 
+        				}
+        			},'-',{
+        				text : '关&nbsp;&nbsp;&nbsp;闭',
+        				handler : function(){
+        					me.getActiveWindow().destroy(); 
+        				}
+        			}]
+        };
+    },
     sortShortCut : function(p){
     	var me = this;
     	if(me.sortType == 'ASC' &&  p == me.sortField){
@@ -392,7 +417,7 @@ Ext.define('Leetop.lib.Desktop', {
         return {
             defaultAlign: 'br-tr',
             items: [
-                { text: '初始化', 
+                { text: '还&nbsp;&nbsp;&nbsp;原', 
                   handler: me.onWindowMenuRestore, 
                   scope: me },
                 { text: '最小化', 
@@ -471,14 +496,14 @@ Ext.define('Leetop.lib.Desktop', {
     	me.taskbar.quickStart.remove(btn);
     	me.taskbar.quickStart.doLayout();
     },
-    onDesktopMenu: function (e) {
+    onDesktopContextMenu: function (e) {
         var me = this, menu = me.contextMenu;
         e.stopEvent();
         if (!menu.rendered) {
             menu.on('beforeshow', me.onDesktopMenuBeforeShow, me);
         }
         menu.showAt(e.getXY());
-        menu.doConstrain();
+        menu.doConstrain(me);
     },
 
     onDesktopMenuBeforeShow: function (menu) {
@@ -593,6 +618,28 @@ Ext.define('Leetop.lib.Desktop', {
         menu.showAt(e.getXY());
         menu.doConstrain();
     },
+    
+    onWindowHeaderContextMenu: function (e) {
+        var me = this, menu = me.windowHeaderContextMenu;
+        e.stopEvent();
+        win.toFront();
+        menu.showAt(e.getXY());
+        menu.doConstrain(me);
+    },
+
+    onWindowAfterrender : function(w){
+    	var me = this;
+    	w.header.el.on('contextmenu',function(e){
+    		var me = this, menu = me.windowHeaderContextMenu;
+    		if (!menu.rendered) {
+	            menu.on('beforeshow', me.onWindowHeaderContextMenuBeforeShow, me);
+	        }
+	        e.stopEvent();
+	        w.toFront();
+	        menu.showAt(e.getXY());
+	        menu.doConstrain(me);
+    	},me);
+    },
 
     onWindowClose: function(win) {
         var me = this;
@@ -604,11 +651,18 @@ Ext.define('Leetop.lib.Desktop', {
     //------------------------------------------------------
     // Window context menu handlers
 
+    onWindowHeaderContextMenuBeforeShow: function (menu) {
+        var me= this, win = me.getActiveWindow(),items = menu.items.items;
+        items[0].setDisabled(win.maximized !== true); // Restore
+        //items[1].setDisabled(win.minimized === true); // Minimize
+        items[2].setDisabled(win.maximized === true || win.maximizable === false); // Maximize
+    },
+    
     onWindowMenuBeforeShow: function (menu) {
         var items = menu.items.items, win = menu.theWin;
         items[0].setDisabled(win.maximized !== true && win.hidden !== true); // Restore
         items[1].setDisabled(win.minimized === true); // Minimize
-        items[2].setDisabled(win.maximized === true || win.hidden === true || !win.maximiable === true); // Maximize
+        items[2].setDisabled(win.maximized === true || win.hidden === true || !win.maximizable === true); // Maximize
     },
 
     onWindowMenuClose: function () {
@@ -714,6 +768,7 @@ Ext.define('Leetop.lib.Desktop', {
             deactivate: me.updateActiveWindow,
             minimize: me.minimizeWindow,
             destroy: me.onWindowClose,
+            afterrender : me.onWindowAfterrender,
             scope: me
         });
 
