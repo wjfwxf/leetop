@@ -9,11 +9,11 @@
 	<script>
 		var startLoadingTime = new Date().getTime();
 	</script>
-	<link rel="shortcut icon" href="http://mat1.gtimg.com/www/icon/favicon.ico"/>
-    <link rel="stylesheet" type="text/css" href="${ctx}/lib/ext4/resources/css/ext-all.css" />
+	<link rel="shortcut icon" href="${ctx}/desktop/resources/images/taskbar/favicon.ico"/>
     <link rel="stylesheet" type="text/css" href="${ctx}/desktop/resources/css/desktop.css" />
     <link rel="stylesheet" type="text/css" href="${ctx}/desktop/resources/css/shortcut.css" />
     <link rel="stylesheet" type="text/css" href="${ctx}/desktop/resources/css/icon.css" />
+    <link rel="stylesheet" type="text/css" href="${ctx}/lib/ext4/resources/css/ext-all.css" />
     <script type="text/javascript" src="${ctx}/lib/ext4/ext-all-debug.js"></script>
     <script type="text/javascript" src="${ctx}/lib/ext4/locale/ext-lang-zh_CN.js"></script>
     <script type="text/javascript">
