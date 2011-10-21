@@ -3,20 +3,11 @@ Ext.define('Leetop.lib.Desktop', {
 
     alias: 'widget.desktop',
 
-    uses: [
-        'Ext.util.MixedCollection',
-        'Ext.menu.Menu',
-        'Ext.view.View', // dataview
-        'Ext.window.Window',
-
-        'Leetop.lib.TaskBar',
-        'Leetop.lib.Wallpaper',
-        'Leetop.lib.FitAllLayout',
-        'Ext.ux.DataView.DragSelector',
-        'Ext.ux.DataView.LabelEditor',
-        'Ext.ux.DataView.Draggable',
-        'Ext.ux.DataView.Animated'
-    ],
+    uses: [ 'Leetop.lib.View',
+	        'Leetop.lib.TaskBar',
+	        'Leetop.lib.Wallpaper',
+	        'Leetop.lib.FitAllLayout'
+   	],
 
     activeWindowCls: 'ux-desktop-active-win',
     inactiveWindowCls: 'ux-desktop-inactive-win',
@@ -33,15 +24,7 @@ Ext.define('Leetop.lib.Desktop', {
 
     shortcuts: null,
     
-    shortcutItemSelector: 'div.ux-desktop-shortcut',
-    
-    labelSelector: 'ux-desktop-shortcut-text-inner',
-    
-    shortcutsCols : 9,
-    
-    shortcutsPadding : 70,
-    
-    ghostTpl: [
+    /*ghostTpl: [
 			//'<div class="ux-desktop-shortcut-column">',          
 			'<tpl for=".">',
 			        '<div class="ux-desktop-shortcut" id="{name}-shortcut">',
@@ -58,7 +41,7 @@ Ext.define('Leetop.lib.Desktop', {
 			        '</tpl>',   
 			'</tpl>'
 			//'</div>'
-    ],
+    ],*/
 
 
     taskbarConfig: null,
@@ -69,22 +52,22 @@ Ext.define('Leetop.lib.Desktop', {
     	
         var me = this;
 
-        me.windowMenu = new Ext.menu.Menu(me.createWindowMenu());
-        me.quickStartMenu = new Ext.menu.Menu(me.createQuicStartMenu());
-        me.startContextMenu = new Ext.menu.Menu(me.createStartContextMenu());
+        Ext.MessageBox.updateProgress(0.40,'40%','<br/>正在初始化系统菜单...');
+		me.initContextMenu();
+        
+        Ext.MessageBox.updateProgress(0.65,'65%','<br/>正在初始化任务栏...');
         me.bbar = me.taskbar = new Leetop.lib.TaskBar(me.taskbarConfig);
-        me.taskbar.windowMenu = me.windowMenu;
-        me.taskbar.quickStartMenu = me.quickStartMenu;
-        me.taskbar.startMenu.startContextMenu = me.startContextMenu;
+        Ext.apply(me.taskbar,{
+        	windowMenu : me.windowMenu,
+        	quickStartMenu : me.quickStartMenu
+        });
+        //me.taskbar.startMenu.startContextMenu = me.startContextMenu;
 
         me.windows = new Ext.util.MixedCollection();
-        me.contextMenu = new Ext.menu.Menu(me.createDesktopMenu());
-        me.windowHeaderContextMenu = new Ext.menu.Menu(me.createWindowHeaderContextMenu());
-        me.shortCutItemMenu = new Ext.menu.Menu(me.createShortCutItemMenu());
-
+        
         me.items = [
             { xtype: 'wallpaper', id: me.id+'_wallpaper' }/*,
-            me.createDataView()*/
+            me.createView()*/
         ];
         
         me.callParent();
@@ -98,6 +81,15 @@ Ext.define('Leetop.lib.Desktop', {
         Ext.EventManager.onWindowResize(me.refreshView, this, {delay:100});
     },
     
+    initContextMenu : function(){
+    	var me = this;
+    	me.windowMenu = new Ext.menu.Menu(me.createWindowMenu());
+        me.quickStartMenu = new Ext.menu.Menu(me.createQuicStartMenu());
+        me.startContextMenu = new Ext.menu.Menu(me.createStartContextMenu());
+        me.contextMenu = new Ext.menu.Menu(me.createDesktopMenu());
+        me.windowHeaderContextMenu = new Ext.menu.Menu(me.createWindowHeaderContextMenu());
+    },
+    
     afterRender: function () {
         var me = this;
         me.callParent();
@@ -106,166 +98,22 @@ Ext.define('Leetop.lib.Desktop', {
     
     initView : function(){
     	var me = this;
-    	me.shortcutsCols = Math.floor((me.getHeight() - me.taskbar.getHeight()) / me.shortcutsPadding);
-    	me.add(me.createDataView());
-    	me.shortcutsView = me.items.getAt(1);
-    	me.initShortcutEvent();
+    	Ext.MessageBox.updateProgress(0.8,'80%','<br/>正在初始化桌面图标...');
+    	me.view = Ext.create('Leetop.lib.View',{
+            xtype: 'desktopview',
+            desktop : me,
+            store : me.shortcuts,
+            app : me.app
+        });
+        me.add(me.view);
+        me.view.init();
     },
     
     refreshView : function(){
     	var me = this;
-    	me.shortcutsCols = Math.floor(me.shortcutsView.getHeight() / me.shortcutsPadding);
-		me.shortcutsView.tpl = new Ext.XTemplate(me.createShortcutTpl());
-		me.shortcutsView.refresh();
-		me.initShortcutEvent();
+		me.view.refresh();
     },
     
-    createShortcutTpl : function(){
-    	return [
-	              '<div class="ux-desktop-shortcut-column">',          
-	              '<tpl for=".">',
-	      	            '<div class="ux-desktop-shortcut" id="{name}-shortcut">',
-	      	                '<div class="ux-desktop-shortcut-icon {iconCls}">',
-	      	                    '<img src="',Ext.BLANK_IMAGE_URL,'" title="{name}">',
-	      	                '</div>',
-	      	                '<div class="ux-desktop-shortcut-text">',
-	      	                	'<div class="ux-desktop-shortcut-text-inner">{name}</div>',
-	      	                '</div>',
-	      	            '</div>',
-	      	            '<tpl if="xindex % ' + this.shortcutsCols + ' == 0">',
-	      	            	'</div><div class="ux-desktop-shortcut-column">',
-	      	            '</tpl>',   
-	              '</tpl>',
-	              '</div>',
-	              '<div class="x-clear"></div>'
-    	      ];
-    },
-    
-    initShortcutEvent : function(){
-    	var me = this;
-    	me.shortcutsView.on('itemdblclick', me.onShortcutItemClick, me);
-        me.shortcutsView.on('itemcontextmenu', me.onShortcutItemMenu, me);
-        var dd = new Ext.dd.DragDrop(me.shortcutsView.id, "dd");
-        me.shortcutsView.all.each(function(node){
-        	me.createShortcutDragSource(node);
-        });
-    },
-    
-    moveShortcut : function(target,source){
-    	//var targetXY = target.getXY();
-    	//var sourceXY = source.getXY();
-    	//target.moveTo(sourceXY[0],sourceXY[1],true);
-    	var me = this;
-    	var sourceIndex = me.shortcutsView.indexOf(source);
-    	var sourceRecord  = me.shortcutsView.store.getAt(sourceIndex);
-    	if(target){
-    		var targetIndex = me.shortcutsView.indexOf(target);
-    		me.shortcutsView.store.remove(sourceRecord);
-    		me.shortcutsView.store.insert(targetIndex,sourceRecord);
-    	}else{
-    		me.shortcutsView.store.remove(sourceRecord);
-    		me.shortcutsView.store.add(sourceRecord);
-    	}
-    	me.initShortcutEvent();
-    	//source.moveTo(targetXY[0],targetXY[1],true);
-    },
-    
-    createShortcutDragSource : function(node){
-    	var me = this;
-    	var ds = new Ext.dd.DragSource(node.id, 
-    		{ group: 'dd',
-    		  animRepair : true,
-    		  afterDragDrop : function(target, e, id) {
-         	     var target = Ext.fly(e.getTarget(me.shortcutItemSelector)),source =  this.el;
-        	     //if(target){
-        	     		// me.moveShortcut(target,source);
-        	    // }
-        	     delete target;
-    		  },
-			  beforeDragDrop : function(target, e, id){
-	        	     var target = Ext.fly(e.getTarget(me.shortcutItemSelector)),source =  this.el;
-	        	     me.moveShortcut(target,source);
-	        	     delete target;
-				  //var proxy = this.proxy;
-				  //alert(proxy.el.query('div.ux-desktop-shortcut ux-desktop-shortcut-over'));
-			  },
-			  getRepairXY : function(e,data){
-				return [0,0];
-			  }
-    	});
-    },
-    
-    createDataView: function () {
-        var me = this;
-        return {
-            xtype: 'dataview',
-            overItemCls: 'ux-desktop-shortcut-over',
-            trackOver: true,
-            itemSelector: me.shortcutItemSelector,
-            store: me.shortcuts,
-            multiSelect: true,
-            tpl: new Ext.XTemplate(me.createShortcutTpl()),
-            desktop : me,
-            plugins: [
-                      Ext.create('Ext.ux.DataView.DragSelector', {}),
-                      Ext.create('Ext.ux.DataView.LabelEditor', {dataIndex: 'name',
-                    	  										 labelSelector: me.labelSelector
-                    	  										})
-                      //Ext.create('Ext.ux.DataView.Animated')  										
-                      //Ext.create('Ext.ux.DataView.Draggable', {})
-                  ],
-            listeners : {
-            	//beforerefresh : me.initShortcutEvent,
-            	//scope : me
-            }
-        };
-    },
-    
-    createShortCutItemMenu : function(){
-    	var me = this, ret = {
-    			items : me.shortCutContextMenu || []
-    	};
-    	ret.items.push(
-    		{ text : '打开(O)',
-    		  scope : me ,
-    		  handler : function(){
-    			me.onShortcutItemClick(me.shortcutsView, me.contextMenuSelectedShortcut.record, me.contextMenuSelectedShortcut.item, me.contextMenuSelectedShortcut.index);
-    		  }
-    		},
-    		{ text : '删除(D)',
-    		  scope : me,
-    		  handler: function(){
-    			me.onShortcutItemRemove(me.contextMenuSelectedShortcut.record);
-    		  }
-    		},
-    		'-',
-    		{ text : '重命名(M)',
-    		  sope : me,
-    		  handler : function(){
-    			me.onShortcutItemRename(me.contextMenuSelectedShortcut.record,me.contextMenuSelectedShortcut.item);
-    		  }
-    		},
-    		{ text : '添加到',
-    		  menu : [{
-    			  text : '快速启动栏(Q)',
-    			  sope : me,
-    			  handler : function(){
-        			  me.onShortcutAddToQuickStart(me.contextMenuSelectedShortcut.record);
-        		  }
-    		  },{
-    			  text : '开始菜单栏(S)',
-    			  sope : me,
-    			  handler : function(){
-    				  me.onShortcutAddToStartMenu(me.contextMenuSelectedShortcut.record);
-    			  }
-    		  }]
-    		  
-    		},'-',
-    		{ text : '属性(R)',sope : me}
-    	);
-    	return ret;
-    },
-
     createDesktopMenu: function () {
         var me = this, ret = {
             items: me.contextMenuItems || []
@@ -295,22 +143,22 @@ Ext.define('Leetop.lib.Desktop', {
 		    			   	   iconCls : 'icon-sort-shortcut',
 		        			   menu:[{ text: '名称', 
 		      				 	 handler: function(){
-		      				 		 me.sortShortCut('name');
+		      				 		 me.view.sortShortCut('name');
 		      				 	 }, 
 		      				 	 scope: me
 		      				 },{ text: '时间', 
 		      					handler: function(){
-		     				 		 me.sortShortCut('iconCls');
+		     				 		 me.view.sortShortCut('iconCls');
 		     				 	 },
 		      				     scope: me
 		      				 },{ text: '类型', 
 		      					 handler: function(){
-		      						me.sortShortCut('module');
+		      						me.view.sortShortCut('module');
 		      					 },
 		      				     scope: me
 		      				 },{ text: '位置', 
 		      					 handler: function(){
-		      						me.sortShortCut('index');
+		      						me.view.sortShortCut('index');
 		      					 },
 		      				     scope: me
 		      				 }]
@@ -334,7 +182,7 @@ Ext.define('Leetop.lib.Desktop', {
 			        	 menu:[{   text: '文件夹',
 			        	 		   iconCls : 'icon-folder',
 			        	 		   handler : function(){
-			        	 		   		me.shortcutsView.store.add({
+			        	 		   		me.view.store.add({
 			        	 		   			name : '新建文件夹',
 			        	 		   			iconCls : 'folder-shortcut',
 			        	 		   			handler : function(){
@@ -398,18 +246,6 @@ Ext.define('Leetop.lib.Desktop', {
         				}
         			}]
         };
-    },
-    sortShortCut : function(p){
-    	var me = this;
-    	if(me.sortType == 'ASC' &&  p == me.sortField){
-    		me.shortcutsView.store.sort(p, 'DESC');
-    		me.sortType = 'DESC';
-    	}else{
-    		me.shortcutsView.store.sort(p, 'ASC');
-    		me.sortType = 'ASC';
-    	}
-    	me.sortField = p;
-    	me.initShortcutEvent();
     },
 
     createWindowMenu: function () {
@@ -514,111 +350,6 @@ Ext.define('Leetop.lib.Desktop', {
         });
     },
 
-    onShortcutItemRemove : function(record){
-    	var me = this;
-    	Ext.Msg.show({
-    			title : '系统提示', 
-    			msg : '您确定要删除'+record.data.name+'么?',
-    			icon : Ext.Msg.QUESTION, 
-    			fn : function(btn){
-    				if(btn == 'ok'){
-    					me.shortcutsView.store.remove(record);
-    					me.initShortcutEvent();
-    				}
-    			}, 
-    			buttons: Ext.Msg.OKCANCEL
-    	});
-    },
-    
-    onShortcutItemRename : function(record,item){
-    	var me = this,shortcut = Ext.fly(Ext.fly(item).first('div.ux-desktop-shortcut-text')).first('div.'+me.labelSelector)
-    	,editor = me.shortcutsView.plugins[1];
-    	if(shortcut){
-    		editor.startEdit(shortcut, record.data[editor.dataIndex]);
-    		editor.activeRecord = record;
-    		//me.shortcutsView.fireEvent(new Ext.EventObject(),shortcut);
-    	}
-    },
-    
-    onShortcutItemClick: function (dataView, record,item,index) {
-        var me = this, module = me.app.getModule(record.data.module),
-            win = module && module.createWindow(record.data.iconCls);
-        if (win) {
-            me.restoreWindow(win);
-        }
-        dataView.getSelectionModel().deselect(index);
-    },
-    
-    onShortcutAddToQuickStart: function(record){
-    	var me = this;
-    	me.taskbar.quickStart.add(
-    		{ name: record.data.name, 
-    		  iconCls: me.createSmallIconCls(record.data.iconCls), 
-    		  module: record.data.module/*,
-    		  handler: me.taskbar.onQuickStartClick,
-	          scope: me.taskbar*/
-    		}
-    	);
-    	
-    	me.taskbar.quickStart.doLayout();
-    },
-    
-    onShortcutAddToStartMenu: function(record){
-    	var me = this;
-    	me.taskbar.startMenu.menu.add(
-    		{ text: record.data.name, 
-    		  iconCls: me.createSmallIconCls(record.data.iconCls),
-    		  module: record.data.module/*,
-    		  handler: me.taskbar.onQuickStartClick,
-	          scope: me.taskbar*/
-    		}
-    	);
-    	
-    	me.taskbar.startMenu.menu.doLayout();
-    },
-    
-    /**
-     * 菜单展现之前，设定右键选择的图标的样式
-     * */
-    onShortcutItemMenuBeforeShow : function(){
-    	//TODO 还可以继续优化
-    	if(!this.shortcutsView.getSelectionModel().isSelected(this.contextMenuSelectedShortcut.index)){
-    		this.contextMenuSelectedShortcut.item.className = 'ux-desktop-shortcut-selected';
-    	}else{
-    		this.shortcutsView.getSelectionModel().deselectAll();
-    		this.shortcutsView.getSelectionModel().select(this.contextMenuSelectedShortcut.index);
-    	}
-    },
-    
-    /**
-     * 菜单隐藏后，取消所有图标的选择
-     * */
-    onShortcutItemMenuHide : function(){
-    		this.shortcutsView.getSelectionModel().deselectAll();
-    		this.contextMenuSelectedShortcut.item.className = 'ux-desktop-shortcut';
-    },
-    
-    /***
-     * 点击图标右键菜单
-     * */
-    onShortcutItemMenu: function (dataView, record ,item,index,e) {
-        var me = this, menu = me.shortCutItemMenu;
-        me.contextMenuSelectedShortcut = {
-        		record : record,
-        		item : item,
-        		index : index
-        };
-        if (!menu.rendered) {
-            menu.on('beforeshow', me.onShortcutItemMenuBeforeShow, me);
-        }
-        //dataView.getSelectionModel().select(index,true);
-        menu.on('deactivate', me.onShortcutItemMenuHide, me);
-
-        e.stopEvent();
-        menu.showAt(e.getXY());
-        menu.doConstrain();
-    },
-    
     onWindowHeaderContextMenu: function (e) {
         var me = this, menu = me.windowHeaderContextMenu;
         e.stopEvent();
@@ -699,13 +430,13 @@ Ext.define('Leetop.lib.Desktop', {
 
     refreshDesktop : function(){
     	var me = this;
-    	//this.shortcutsView.getSelectionModel().deselectAll();
-    	//this.shortcutsView.refresh();
     	me.el.mask('正在刷新页面...');
-    	me.shortcutsView.store.loadData(me.app.shortcutsData);
-    	me.shortcutsView.store.sort('index', 'ASC');
+    	me.view.store.loadData(me.app.shortcutsData);
+    	me.view.store.sort('index', 'ASC');
+    	me.view.refresh();
     	me.el.unmask();
     },
+    
     getWallpaper: function () {
         return this.wallpaper.wallpaper;
     },
@@ -890,17 +621,5 @@ Ext.define('Leetop.lib.Desktop', {
         }
 
         me.taskbar.setActiveButton(activeWindow && activeWindow.taskButton);
-    },
-    
-    createSmallIconCls : function(iconCls){
-    	if(!Ext.util.CSS.getRule('.'+iconCls + "-small")){
-    		var rule = Ext.util.CSS.getRule('.'+iconCls);
-    		if(rule){
-		    	var cssText = "."+iconCls+"-small {" +
-									"background: url('"+ctx+"/makeIcon?url="+rule.style.backgroundImage+"') repeat;}";
-		    	Ext.util.CSS.createStyleSheet(cssText);
-	    	}
-    	}
-    	return iconCls + "-small";
     }
 });
