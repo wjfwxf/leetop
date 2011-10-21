@@ -48,14 +48,16 @@ Ext.define('Leetop.lib.AbstractApp', {
             me.initModules(me.modules);
         }
         desktopCfg = me.getDesktopConfig();
+        Ext.MessageBox.updateProgress(0.25,'25%','<br/>正在初始化桌面...');
         me.desktop = new Leetop.lib.Desktop(desktopCfg);
-
         me.viewport = new Ext.container.Viewport({
             layout: 'fit',
             items: [ me.desktop ],
             listeners : {
             	'afterrender' : function(){
             		me.desktop.initView();
+            		var costTime = (new Date().getTime()) - startLoadingTime;
+            		Ext.MessageBox.updateProgress(1,'100%','<br/>桌面加载完成,耗时:' + costTime + 'ms');
             	}
             }
         });
@@ -88,10 +90,10 @@ Ext.define('Leetop.lib.AbstractApp', {
         	
         	else if(e.getKey() == e.F2){
 	    		e.stopEvent();
-	    		var shortcutsView = me.desktop.shortcutsView,nodes = shortcutsView.getSelectedNodes();
+	    		var view = me.desktop.view,nodes = view.getSelectedNodes();
 	    		if(nodes.length == 1){
-	    			var shortcut = Ext.fly(Ext.fly(nodes[0]).first('div.ux-desktop-shortcut-text')).first('div.'+me.desktop.labelSelector),
-	    			record = shortcutsView.getSelectedRecords()[0],editor = shortcutsView.plugins[1];
+	    			var shortcut = Ext.fly(Ext.fly(nodes[0]).first('div.ux-desktop-shortcut-text')).first('div.'+me.desktop.view.labelSelector),
+	    			record = view.getSelectedRecords()[0],editor = view.editor;
 	    			if(shortcut){
 			    		editor.startEdit(shortcut, record.data[editor.dataIndex]);
 			    		editor.activeRecord = record;
@@ -100,11 +102,11 @@ Ext.define('Leetop.lib.AbstractApp', {
 	    	}
 	    	else if(e.getKey() == e.DELETE){
 	    		e.stopEvent();
-	    		var shortcutsView = me.desktop.shortcutsView,records = shortcutsView.getSelectedRecords();
+	    		var view = me.desktop.view,records = view.getSelectedRecords();
 	    		if(records.length > 0){
 		    		Ext.Msg.confirm('系统提示', '您确定删除'+ (records.length > 1 ? '这' + records.length + '个应用程序' : records[0].data.name )+'么?',function(btn){
 		    			if(btn == 'yes'){
-		    				shortcutsView.store.remove(records);
+		    				view.store.remove(records);
 		    			}
 		    		});
 	    		}
@@ -113,7 +115,7 @@ Ext.define('Leetop.lib.AbstractApp', {
 	    			e.getKey() == e.LEFT || e.getKey() == e.RIGHT || 
 	    			e.getKey() == e.HOME || e.getKey() == e.END || e.getKey() == e.ENTER){
 	    		e.stopEvent();
-	    		var view = me.desktop.shortcutsView,records = view.getSelectedRecords(),selector = view.getSelectionModel();
+	    		var view = me.desktop.view,records = view.getSelectedRecords(),selector = view.getSelectionModel();
 	    		if(records.length > 0){
 		    		var index = view.store.indexOf(records[records.length - 1]);
 	    			if( e.getKey() == e.UP ){
@@ -125,7 +127,7 @@ Ext.define('Leetop.lib.AbstractApp', {
 		    				selector.select((index + 1));
 		    			}
 	    			}else if(e.getKey() == e.LEFT || e.getKey() == e.RIGHT){
-	    				var rows = me.desktop.shortcutsCols;
+	    				var rows = me.desktop.view.shortcutsCols;
 	    				if(e.getKey() == e.LEFT){
 		    				if((index - rows) >= 0){
 			    				selector.select((index - rows));
@@ -238,13 +240,23 @@ Ext.define('Leetop.lib.AbstractApp', {
     },
     
     
+    createSmallIconCls : function(iconCls){
+    	if(!Ext.util.CSS.getRule('.'+iconCls + "-small")){
+    		var rule = Ext.util.CSS.getRule('.'+iconCls);
+    		if(rule){
+		    	var cssText = "."+iconCls+"-small {" +
+									"background: url('"+ctx+"/makeIcon?url="+rule.style.backgroundImage+"') repeat;}";
+		    	Ext.util.CSS.createStyleSheet(cssText);
+	    	}
+    	}
+    	return iconCls + "-small";
+    },
 
     getDesktop : function() {
         return this.desktop;
     },
 
     onUnload : function(e) {
-    	alert('是否要离开？')
         if (this.fireEvent('beforeunload', this) === false) {
             e.stopEvent();
         }
