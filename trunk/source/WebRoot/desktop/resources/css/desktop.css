@@ -350,7 +350,7 @@
     background-image:url(/Leetop/desktop/resources/images/delete.gif) !important;
 }
 .save {
-    background-image:url(/Leetop/desktop//Leetop/desktop/shared/icons/save.gif) !important;
+    background-image:url(/Leetop/desktop/resources/icons/save.gif) !important;
 }
 .accordion {
     background-image:url(/Leetop/desktop/resources/images/accordian.gif) !important;
@@ -393,23 +393,23 @@
 
 
 .x-form-list-trigger {
-    background-image: url(/Leetop/resources/themes/images/default/form/list-trigger.gif);
+    background-image: url(/Leetop/lib/ext4/resources/themes/images/default/form/list-trigger.gif);
 }
 
 .x-form-goto-trigger {
-    background-image: url(/Leetop/resources/themes/images/default/form/goto-trigger.gif);
+    background-image: url(/Leetop/lib/ext4/resources/themes/images/default/form/goto-trigger.gif);
 }
 
 .x-form-refresh-trigger {
-    background-image: url(/Leetop/resources/themes/images/default/form/refresh-trigger.gif);
+    background-image: url(/Leetop/lib/ext4/resources/themes/images/default/form/refresh-trigger.gif);
 }
 
 .x-form-clear-trigger {
-    background-image: url(/Leetop/resources/themes/images/default/form/clear-trigger.gif);
+    background-image: url(/Leetop/lib/ext4/resources/themes/images/default/form/clear-trigger.gif);
 }
 
 .x-form-search-trigger {
-    background-image: url(/Leetop/resources/themes/images/default/form/search-trigger.gif);
+    background-image: url(/Leetop/lib/ext4/resources/themes/images/default/form/search-trigger.gif);
 }
 
 .x-browser-white {
@@ -451,4 +451,9 @@
 
 .x-browser-load-icon {
     background-image: url(/Leetop/desktop/resources/images/browser/load.gif);
+}
+
+.x-message-box .ext-mb-download {
+    background: url("/Leetop/desktop/resources/images/download.gif") no-repeat scroll 6px 0px transparent;
+    height: 52px!important;
 }
