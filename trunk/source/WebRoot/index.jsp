@@ -29,7 +29,7 @@
 		
         var myDesktopApp,ctx = "${ctx}";
         Ext.onReady(function () {
-        	Ext.MessageBox.show({
+        	/*Ext.MessageBox.show({
                 title : "正在加载桌面, 请稍候...",
                 msg: "<br/>加载系统基础组件....",
                 progressText: "20%",
@@ -37,13 +37,13 @@
                 progress:true,
                 closable:false,
                 icon:"ext-mb-download"
-            });
-        	Ext.MessageBox.updateProgress(0.2);
+            });*/
+        	//Ext.MessageBox.updateProgress(0.2);
             myDesktopApp = new Leetop.App({
             	user : "李球"
             });
             window.setTimeout(function(){
-            	Ext.MessageBox.hide();
+            	//Ext.MessageBox.hide();
             },1000); 
         });
         
