@@ -64,24 +64,89 @@ Ext.define('Leetop.lib.AbstractApp', {
         	e.stopEvent();
         });
         Ext.getBody().on('keydown', function(e){
+        	var me = this;
         	if(e.getKey() == e.ESC){
         		me.onLogout();
         	}
-        	if(e.getKey() == e.F5){
+        	else if(e.getKey() == e.F5){
         		e.stopEvent();
         		Ext.Msg.confirm('系统提示', '您确定要刷新页面么?',function(btn){
         			if(btn == 'yes'){
         				window.location.reload();
         			}
         		});
-        		//me.refreshDesktop();
         	}
-        	if(e.getKey() == e.F1){
+        	else if(e.getKey() == e.F1){
         		e.stopEvent();
         		Ext.Msg.alert('系统提示', '查看帮助!');
-        		//me.refreshDesktop();
         	}
-        },me.app);
+        	
+        	else if(e.getKey() == e.F3){
+        		e.stopEvent();
+        		Ext.Msg.alert('系统提示', '查询程序!');
+        	}
+        	
+        	else if(e.getKey() == e.F2){
+	    		e.stopEvent();
+	    		var shortcutsView = me.desktop.shortcutsView,nodes = shortcutsView.getSelectedNodes();
+	    		if(nodes.length == 1){
+	    			var shortcut = Ext.fly(Ext.fly(nodes[0]).first('div.ux-desktop-shortcut-text')).first('div.'+me.desktop.labelSelector),
+	    			record = shortcutsView.getSelectedRecords()[0],editor = shortcutsView.plugins[1];
+	    			if(shortcut){
+			    		editor.startEdit(shortcut, record.data[editor.dataIndex]);
+			    		editor.activeRecord = record;
+			    	}
+	    		}
+	    	}
+	    	else if(e.getKey() == e.DELETE){
+	    		e.stopEvent();
+	    		var shortcutsView = me.desktop.shortcutsView,records = shortcutsView.getSelectedRecords();
+	    		if(records.length > 0){
+		    		Ext.Msg.confirm('系统提示', '您确定删除'+ (records.length > 1 ? '这' + records.length + '个应用程序' : records[0].data.name )+'么?',function(btn){
+		    			if(btn == 'yes'){
+		    				shortcutsView.store.remove(records);
+		    			}
+		    		});
+	    		}
+	    	}
+	    	else if(e.getKey() == e.UP || e.getKey() == e.DOWN || 
+	    			e.getKey() == e.LEFT || e.getKey() == e.RIGHT || 
+	    			e.getKey() == e.HOME || e.getKey() == e.END || e.getKey() == e.ENTER){
+	    		e.stopEvent();
+	    		var view = me.desktop.shortcutsView,records = view.getSelectedRecords(),selector = view.getSelectionModel();
+	    		if(records.length > 0){
+		    		var index = view.store.indexOf(records[records.length - 1]);
+	    			if( e.getKey() == e.UP ){
+		    			if((index - 1) >= 0 ){
+		    				selector.select((index - 1));
+		    			}
+	    			}else if(e.getKey() == e.DOWN){
+	    				if((index + 1) <= view.store.getCount() - 1 ){
+		    				selector.select((index + 1));
+		    			}
+	    			}else if(e.getKey() == e.LEFT || e.getKey() == e.RIGHT){
+	    				var rows = me.desktop.shortcutsCols;
+	    				if(e.getKey() == e.LEFT){
+		    				if((index - rows) >= 0){
+			    				selector.select((index - rows));
+			    			}
+		    			}else if(e.getKey() == e.RIGHT){
+		    				if((index + rows) <= view.store.getCount() - 1 ){
+			    				selector.select((index + rows));
+			    			}
+		    			}
+	    			}else if(e.getKey() == e.HOME){
+		    			selector.select(0);
+	    			}else if(e.getKey() == e.END){
+	    				selector.select(view.store.getCount() - 1);
+	    			}else if(e.getKey() == e.ENTER){
+	    				Ext.each(records,function(record){
+	    					me.desktop.onShortcutItemClick(view,record,null,view.store.indexOf(record));
+	    				});
+	    			}
+    			}
+	    	}
+        },me);
         Ext.EventManager.on(window, 'beforeunload', me.onUnload, me);
 
         me.isReady = true;
@@ -171,12 +236,15 @@ Ext.define('Leetop.lib.AbstractApp', {
             });
         }
     },
+    
+    
 
     getDesktop : function() {
         return this.desktop;
     },
 
     onUnload : function(e) {
+    	alert('是否要离开？')
         if (this.fireEvent('beforeunload', this) === false) {
             e.stopEvent();
         }

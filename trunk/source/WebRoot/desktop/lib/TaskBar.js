@@ -41,7 +41,7 @@ Ext.define('Leetop.lib.TaskBar', {
         me.windowBar = new Ext.toolbar.Toolbar(me.getWindowBarConfig());
 
         me.tray = new Ext.toolbar.Toolbar(me.getTrayConfig());
-
+        
         me.items = [
             {
                 xtype: 'button',
@@ -257,25 +257,26 @@ Ext.define('Leetop.lib.TaskBar', {
  * This class displays a clock on the toolbar.
  */
 Ext.define('Leetop.lib.TrayClock', {
-    extend: 'Ext.toolbar.TextItem',
+    extend: 'Ext.button.Button',
 
     alias: 'widget.trayclock',
 
-    cls: 'ux-desktop-trayclock',
+    //cls: 'ux-desktop-trayclock',
 
-    html: '&#160;',
-
-    timeFormat: 'g:i A',
-
+    //html: '&#160;',
+    
+	id : 'desktop_trayclock',
+	
+    timeFormat: 'H:i',
+    
     tpl: '{time}',
 
     initComponent: function () {
         var me = this;
 
         me.callParent();
-
         if (typeof(me.tpl) == 'string') {
-            me.tpl = new Ext.XTemplate(me.tpl);
+            me.text = new Ext.XTemplate(me.tpl);
         }
     },
 
@@ -298,11 +299,12 @@ Ext.define('Leetop.lib.TrayClock', {
 
     updateTime: function () {
         var me = this, time = Ext.Date.format(new Date(), me.timeFormat),
-            text = me.tpl.apply({ time: time });
-        if (me.lastText != text) {
-            me.setText(text);
-            me.lastText = text;
-        }
+            text = me.tpl.apply({ time: time }),date = Ext.Date.format(new Date(), 'Y年m月d日  H时i分');
+       // if (me.lastText != text) {
+            me.setText(time);
+            me.setTooltip({title : '系统时间',text : date,target: 'desktop_trayclock',align: 'bl-tl'});
+           // me.lastText = text;
+        //}
         me.timer = Ext.Function.defer(me.updateTime, 10000, me);
     }
 });
