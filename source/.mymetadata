@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="Leetop"
+  id="myeclipse.1319217122775"
+  context-root="/Leetop"
+  j2ee-spec="6.0"
+  archive="Leetop.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+
