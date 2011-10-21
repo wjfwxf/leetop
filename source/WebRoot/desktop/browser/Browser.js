@@ -108,7 +108,7 @@ Ext.define('Leetop.browser.Browser', {
 			text : '正在获取' + http + '的标题...'
 		});
 		Ext.Ajax.request({
-		    url: '/Desktop/servlet/BrowserServlet',
+		    url: ctx+'/servlet/BrowserServlet',
 		    params: {
 		        http : http
 		    },
