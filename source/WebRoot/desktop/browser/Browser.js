@@ -164,8 +164,8 @@ Ext.define('Leetop.browser.Browser', {
             win = desktop.createWindow({
                 id: me.windowId,
                 title: '浏览器',
-                width: desktop.shortcutsView.getWidth() - 100,
-                height: desktop.shortcutsView.getHeight() - 100,
+                width: desktop.view.getWidth() - 100,
+                height: desktop.view.getHeight() - 100,
                 iconCls: 'tt-shortcut-small',
                 animCollapse: false,
                 maximizable : true,

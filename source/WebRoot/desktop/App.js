@@ -9,21 +9,8 @@ Ext.define('Leetop.App', {
     extend: 'Leetop.lib.AbstractApp',
 
     requires: [
-        'Ext.window.MessageBox',
         'Leetop.lib.ShortcutModel',
-        'Leetop.module.SystemStatus',
-        'Leetop.module.VideoWindow',
-        'Leetop.module.GridWindow',
-        'Leetop.module.TabWindow',
-        'Leetop.module.AccordionWindow',
-        'Leetop.module.Notepad',
-        'Leetop.module.BogusMenuModule',
-        'Leetop.module.BogusModule',
-        'Leetop.module.Settings',
-        'Leetop.module.Douban',
-        'Leetop.module.QQMap',
-        'Leetop.browser.Browser',
-        'Leetop.module.QQMusic'
+        'Leetop.lib.Settings'
     ],
     
     init: function() {
@@ -37,55 +24,151 @@ Ext.define('Leetop.App', {
 
     getModules : function(){
         return [
-            new Leetop.module.VideoWindow(),
-            //new Leetop.module.Blockalanche(),
+            /*new Leetop.module.VideoWindow(),
+            new Leetop.module.Blockalanche(),
             new Leetop.module.SystemStatus(),
             new Leetop.module.GridWindow(),
             new Leetop.module.TabWindow(),
             new Leetop.module.AccordionWindow(),
-            new Leetop.module.Notepad(),
-            //new Leetop.module.BogusMenuModule(),
-           // new Leetop.module.BogusModule(),
+            new Leetop.module.Notepad(),*/
+            {
+	            text: 'Notepad',
+	            iconCls:'notepad',
+	            module : 'Leetop.module.Notepad',
+//	            /handler : this.createWindow,
+	            scope: this
+	        }/*,
+            new Leetop.module.BogusMenuModule(),
+            new Leetop.module.BogusModule(),
             new Leetop.module.Douban(),
             new Leetop.module.QQMap(),
             new Leetop.browser.Browser(),
-            new Leetop.module.QQMusic()
+            new Leetop.module.QQMusic()*/
         ];
     },
     
     shortcutsData : [
-                    { name: '腾迅QQ', iconCls: 'qq-shortcut', module: 'notepad',index : 1},
-                    { name: '腾讯微博', iconCls: 't-shortcut', module: 'notepad',index : 2},
-                    { name: '浏览器', iconCls: 'tt-shortcut', module: 'browser',index : 3},
-                    { name: 'QQ空间', iconCls: 'qzone-shortcut', module: 'notepad',index : 4},
-                    { name: 'QQ邮箱', iconCls: 'mail-shortcut', module: 'notepad',index : 5},
-                    { name: 'QQ音乐', iconCls: 'qmusic-shortcut', module: 'qqmusic',index : 6},
-                    { name: '腾讯视频', iconCls: 'shipin-shortcut', module: 'notepad',index : 7},
-                    { name: '腾讯朋友', iconCls: 'pengyou-shortcut', module: 'notepad',index : 8},
-                    { name: 'QQ词典', iconCls: 'dic-shortcut', module: 'notepad',index : 9},
-                    { name: 'QQ地图', iconCls: 'map-shortcut', module: 'qqmap',index : 10},
-                    { name: '网络硬盘', iconCls: 'nethard-shortcut', module: 'notepad',index : 11},
-                    { name: '好友管理', iconCls: 'friend-shortcut', module: 'notepad',index : 12},
-                    { name: '插件管理', iconCls: 'plugin-shortcut', module: 'notepad',index : 13},
-                    { name: '应用中心', iconCls: 'app-shortcut', module: 'notepad',index : 14},
-                    { name: '豆瓣FM', iconCls: 'douban-shortcut', module: 'douban',index : 15},
-                    { name: '便     签', iconCls: 'bianqian-shortcut', module: 'notepad',index : 16},
-                    { name: '时钟', iconCls: 'clock-shortcut', module: 'notepad',index : 17},
-                    { name: '天气', iconCls: 'wether-shortcut', module: 'notepad',index : 18},
-                    { name: '表格', iconCls: 'grid-shortcut', module: 'grid-win',index : 19 },
-                    { name: '即时通讯', iconCls: 'accordion-shortcut', module: 'acc-win',index : 20 },
-                    { name: '记事本', iconCls: 'notepad-shortcut', module: 'notepad',index : 21 },
-                    { name: '系统状态', iconCls: 'cpu-shortcut', module: 'systemstatus',index : 22}
+                    {
+						name : '腾迅QQ',
+						iconCls : 'qq-shortcut',
+						module : 'Leetop.module.Notepad',
+						index : 1
+					}, {
+						name : '腾讯微博',
+						iconCls : 't-shortcut',
+						module : 'Leetop.module.Notepad',
+						index : 2
+					}, {
+						name : '浏览器',
+						iconCls : 'tt-shortcut',
+						module : 'Leetop.browser.Browser',
+						index : 3
+					}, {
+						name : 'QQ空间',
+						iconCls : 'qzone-shortcut',
+						module : 'Leetop.module.Notepad',
+						index : 4
+					}, {
+						name : 'QQ邮箱',
+						iconCls : 'mail-shortcut',
+						module : 'Leetop.module.Notepad',
+						index : 5
+					}, {
+						name : 'QQ音乐',
+						iconCls : 'qmusic-shortcut',
+						module : 'Leetop.module.QQMusic',
+						index : 6
+					}, {
+						name : '腾讯视频',
+						iconCls : 'shipin-shortcut',
+						module : 'Leetop.module.Notepad',
+						index : 7
+					}, {
+						name : '腾讯朋友',
+						iconCls : 'pengyou-shortcut',
+						module : 'Leetop.module.Notepad',
+						index : 8
+					}, {
+						name : 'QQ词典',
+						iconCls : 'dic-shortcut',
+						module : 'Leetop.module.Notepad',
+						index : 9
+					}, {
+						name : 'QQ地图',
+						iconCls : 'map-shortcut',
+						module : 'Leetop.module.QQMap',
+						index : 10
+					}, {
+						name : '网络硬盘',
+						iconCls : 'nethard-shortcut',
+						module : 'Leetop.module.Notepad',
+						index : 11
+					}, {
+						name : '好友管理',
+						iconCls : 'friend-shortcut',
+						module : 'Leetop.module.Notepad',
+						index : 12
+					}, {
+						name : '插件管理',
+						iconCls : 'plugin-shortcut',
+						module : 'Leetop.module.Notepad',
+						index : 13
+					}, {
+						name : '应用中心',
+						iconCls : 'app-shortcut',
+						module : 'Leetop.module.NotepadA',
+						index : 14
+					}, {
+						name : '豆瓣FM',
+						iconCls : 'douban-shortcut',
+						module : 'Leetop.module.Douban',
+						index : 15
+					}, {
+						name : '便     签',
+						iconCls : 'bianqian-shortcut',
+						module : 'Leetop.module.Notepad',
+						index : 16
+					}, {
+						name : '时钟',
+						iconCls : 'clock-shortcut',
+						module : 'Leetop.module.Notepad',
+						index : 17
+					}, {
+						name : '天气',
+						iconCls : 'wether-shortcut',
+						module : 'Leetop.module.Notepad',
+						index : 18
+					}, {
+						name : '表格',
+						iconCls : 'grid-shortcut',
+						module : 'Leetop.module.GridWindow',
+						index : 19
+					}, {
+						name : '即时通讯',
+						iconCls : 'accordion-shortcut',
+						module : 'Leetop.module.AccordionWindow',
+						index : 20
+					}, {
+						name : '记事本',
+						iconCls : 'notepad-shortcut',
+						module : 'Leetop.module.Notepad',
+						index : 21
+					}, {
+						name : '系统状态',
+						iconCls : 'cpu-shortcut',
+						module : 'Leetop.module.SystemStatus',
+						index : 22
+					}
                 ],
 
     getDesktopConfig: function () {
         var me = this, ret = me.callParent();
 
         return Ext.apply(ret, {
-            //cls: 'ux-desktop-black',
+            // cls: 'ux-desktop-black',
 
             contextMenuItems: [
-                /*{ text: '个性化', handler: me.onSettings, scope: me }*/
+                /* { text: '个性化', handler: me.onSettings, scope: me } */
             ],
 
             shortcuts: Ext.create('Ext.data.Store', {
@@ -111,7 +194,7 @@ Ext.define('Leetop.App', {
                 items: [
                 	{
                         //text:'<center>'+this.user+'</center>',
-                		text:' ',
+                		text:'&nbsp;',
                         scale: 'large',
                         iconAlign: 'top',
                         iconCls:'icon-user-face',
@@ -157,7 +240,7 @@ Ext.define('Leetop.App', {
     },
 
     onSettings: function () {
-        var dlg = new Leetop.module.Settings({
+        var dlg = new Leetop.lib.Settings({
             desktop: this.desktop,
             iconCls : 'icon-personality'
         });

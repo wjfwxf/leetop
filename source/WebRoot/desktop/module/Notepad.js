@@ -7,12 +7,7 @@
 
 Ext.define('Leetop.module.Notepad', {
     extend: 'Leetop.lib.Module',
-
-    requires: [
-        'Ext.form.field.HtmlEditor'
-        //'Ext.form.field.TextArea'
-    ],
-
+	alias: 'widget.notepad',
     id:'notepad',
 
     init : function(){
@@ -24,7 +19,7 @@ Ext.define('Leetop.module.Notepad', {
         };
     },
 
-    createWindow : function(){
+    createWindow : function(desktop){
         var desktop = this.app.getDesktop();
         var win = desktop.getWindow('notepad');
         if(!win){

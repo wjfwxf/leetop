@@ -5,7 +5,7 @@
  * http://www.sencha.com/license
  */
 
-Ext.define('Leetop.module.Settings', {
+Ext.define('Leetop.lib.Settings', {
     extend: 'Ext.window.Window',
 
     uses: [

@@ -146,7 +146,7 @@
 }
 
 .ux-taskbar {
-    height: 30px;
+    height: 28px;
     padding: 0;
 }
 
@@ -455,5 +455,6 @@
 
 .x-message-box .ext-mb-download {
     background: url("/Leetop/desktop/resources/images/download.gif") no-repeat scroll 6px 0px transparent;
+    font-size:12px;
     height: 52px!important;
 }

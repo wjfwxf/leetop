@@ -25,7 +25,7 @@ Ext.define('Leetop.lib.View', {
    initComponent : function(){
    		 var me = this;
    		 me.shortCutItemMenu = new Ext.menu.Menu(me.createShortCutContextMenu());
-   		 me.tpl = new Ext.XTemplate(me.createShortcutTpl());
+   		 me.tpl = new Ext.XTemplate(me.buildTpl());
    		 me.dragSelector = Ext.create('Ext.ux.DataView.DragSelector');
    	     me.editor = Ext.create('Ext.ux.DataView.LabelEditor', {dataIndex: 'name',labelSelector: me.labelSelector});
    		 me.plugins = [me.dragSelector,me.editor];//Ext.create('Ext.ux.DataView.Animated'),//Ext.create('Ext.ux.DataView.Draggable', {})
@@ -39,7 +39,7 @@ Ext.define('Leetop.lib.View', {
    
    refresh : function(){
    		var me = this;
-		me.tpl = new Ext.XTemplate(me.createShortcutTpl());
+		me.tpl = new Ext.XTemplate(me.buildTpl());
 		me.callParent();
 		me.initShortcutEvent();
    },
@@ -57,9 +57,9 @@ Ext.define('Leetop.lib.View', {
     	me.initShortcutEvent();
     },
     
-   createShortcutTpl : function(){
+   buildTpl : function(){
    		var me = this;
-   		me.shortcutsCols = Math.floor((me.desktop.getHeight() - me.desktop.taskbar.getHeight()) / me.shortcutsPadding);
+   		me.shortcutsCols = Math.floor((me.desktop.getHeight() - me.desktop.taskbar.getHeight() + 2) / me.shortcutsPadding);
     	return [
 	              '<div class="ux-desktop-shortcut-column">',          
 	              '<tpl for=".">',
@@ -81,7 +81,7 @@ Ext.define('Leetop.lib.View', {
     },
     
      onShortcutsRemove : function(record){
-    	var me = this,record = me.getSelectedRecords()[0];
+    	var me = this,record = me.selModel.getSelection()[0];
     	Ext.Msg.show({
     			title : '系统提示', 
     			msg : '您确定要删除'+record.data.name+'么?',
@@ -97,7 +97,7 @@ Ext.define('Leetop.lib.View', {
     },
     
     onShortcutsRename : function(record,item){
-    	var me = this,record = me.getSelectedRecords()[0],item = me.getSelectedNodes()[0],
+    	var me = this,record = me.selModel.getSelection()[0],item = me.getSelectedNodes()[0],
     	shortcut = Ext.fly(Ext.fly(item).first('div.ux-desktop-shortcut-text')).first('div.'+me.labelSelector);
     	if(shortcut){
     		me.editor.startEdit(shortcut, record.data[me.editor.dataIndex]);
@@ -107,17 +107,14 @@ Ext.define('Leetop.lib.View', {
     },
     
     onShortcutsClick: function () {
-        var me = this,record = me.getSelectedRecords()[0],
-           module = me.app.getModule(record.data.module),
-            win = module && module.createWindow();
-        if (win) {
-            me.desktop.restoreWindow(win);
-        }
-        me.getSelectionModel().deselect(index);
+        var me = this,record = me.selModel.getSelection()[0],
+       //module = me.app.getModule(record.data.module),
+    	module = me.app.createWindow(record.data.module,record.data.text);
+        me.getSelectionModel().deselect(me.store.indexOf(record));
     },
     
     onShortcutApplyToQuickStart: function(){
-    	var me = this,record = me.getSelectedRecords()[0];
+    	var me = this,record = me.selModel.getSelection()[0];
     	me.desktop.taskbar.quickStart.add(
     		{ name: record.data.name, 
     		  iconCls: me.app.createSmallIconCls(record.data.iconCls), 
@@ -131,7 +128,7 @@ Ext.define('Leetop.lib.View', {
     },
     
     onShortcutApplyToStartMenu: function(){
-    	var me = this,record = me.getSelectedRecords()[0];
+    	var me = this,record = me.selModel.getSelection()[0];
     	me.desktop.taskbar.startMenu.menu.add(
     		{ text: record.data.name, 
     		  iconCls: me.app.createSmallIconCls(record.data.iconCls),
