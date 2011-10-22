@@ -3568,7 +3568,7 @@ var Base = Ext.Base = function() {};
         
         create: function(className, data, createdFn) {
             var manager = this;
-
+            
             if (typeof className !== 'string') {
                 Ext.Error.raise({
                     sourceClass: "Ext",
@@ -3668,7 +3668,6 @@ var Base = Ext.Base = function() {};
                 args = slice.call(arguments, 1),
                 alias = name,
                 possibleName, cls;
-
             if (typeof name !== 'function') {
                 if ((typeof name !== 'string' || name.length < 1)) {
                     Ext.Error.raise({
@@ -4354,7 +4353,7 @@ var Base = Ext.Base = function() {};
         },
 
         
-        require: function(expressions, fn, scope, excludes) {
+        require: function(expressions, fn, scope, fail,excludes) {
             var filePath, expression, exclude, className, excluded = {},
                 excludedClassNames = [],
                 possibleClassNames = [],
@@ -4364,6 +4363,8 @@ var Base = Ext.Base = function() {};
             excludes = Ext.Array.from(excludes);
 
             fn = fn || Ext.emptyFn;
+            
+            fail = fail || Ext.emptyFn;
 
             scope = scope || Ext.global;
 
@@ -4416,6 +4417,7 @@ var Base = Ext.Base = function() {};
             this.queue.push({
                 requires: classNames,
                 callback: fn,
+                fail : fail,
                 scope: scope
             });
 
@@ -4508,6 +4510,7 @@ var Base = Ext.Base = function() {};
             if (this.numPendingFiles === 0) {
                 this.refreshQueue();
             }
+            this.isFileLoaded[className] = false;
             this.hasFileLoadError = true;
             Ext.Error.raise({
                 sourceClass: "Ext.Loader",
