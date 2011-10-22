@@ -186,9 +186,10 @@ Ext.define('Leetop.lib.AbstractApp', {
         Ext.apply(cfg, me.startConfig);
 
         Ext.each(me.modules, function (module) {
-            if (module.launcher) {
+            /*if (module.launcher) {
                 cfg.menu.push(module.launcher);
-            }
+            }*/
+            cfg.menu.push(module);
         });
 
         return cfg;
@@ -212,8 +213,25 @@ Ext.define('Leetop.lib.AbstractApp', {
     initModules : function(modules) {
         var me = this;
         Ext.each(modules, function (module) {
+        	module.handler = function(){
+        		me.createWindow(module.module,module.text);
+        	};
             module.app = me;
         });
+    },
+    
+    createWindow : function(module,text){
+    	var me = this;
+    	if(!Ext.ClassManager.isCreated(module)){
+	    		Ext.require(module,function(){
+	    			var win = Ext.create(module,{app : me}).createWindow();
+	    		});
+    	}else{
+    		var win = Ext.create(module,{app : me}).createWindow();
+    		if (win) {
+	            me.desktop.restoreWindow(win);
+	        }
+    	}
     },
 
     getModule : function(name) {
