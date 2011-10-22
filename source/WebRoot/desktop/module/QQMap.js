@@ -33,8 +33,8 @@ Ext.define('Leetop.module.QQMap', {
             win = desktop.createWindow({
                 id: me.windowId,
                 title: 'QQ地图',
-                width: desktop.shortcutsView.getWidth() - 100,
-                height: desktop.shortcutsView.getHeight() - 100,
+                width: desktop.view.getWidth() - 100,
+                height: desktop.view.getHeight() - 100,
                 iconCls: 'map-small-shortcut',
                 animCollapse: false,
                 maximizable : true,

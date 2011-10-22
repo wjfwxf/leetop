@@ -33,8 +33,8 @@ Ext.define('Leetop.module.QQMusic', {
             win = desktop.createWindow({
                 id: me.windowId,
                 title: 'QQ音乐',
-                width: desktop.shortcutsView.getWidth() - 100,
-                height: desktop.shortcutsView.getHeight() - 100,
+                width: 800,
+                height: 600,
                 iconCls: 'qmusic-small-shortcut',
                 animCollapse: false,
                 maximizable : true,
