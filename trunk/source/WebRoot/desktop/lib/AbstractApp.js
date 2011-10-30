@@ -89,53 +89,53 @@ Ext.define('Leetop.lib.AbstractApp', {
         	}
         	
         	else if(e.getKey() == e.O){
-        		e.stopEvent();
         		var view = me.desktop.view;
         		if(view.itemcontextmenu.isHidden() === false){
+        			e.stopEvent();
         			view.onItemEnter();
         			view.itemcontextmenu.hide();
         		}
         	}
         	else if(e.getKey() == e.D){
-        		e.stopEvent();
         		var view = me.desktop.view;
         		if(view.itemcontextmenu.isHidden() === false){
+        			e.stopEvent();
         			view.onItemRemove();
         			view.itemcontextmenu.hide();
         		}
         	}
         	
         	else if(e.getKey() == e.Q){
-        		e.stopEvent();
         		var view = me.desktop.view;
         		if(view.itemcontextmenu.isHidden() === false){
+        			e.stopEvent();
         			view.onItemApplyToQuickStart();
         			view.itemcontextmenu.hide();
         		}
         	}
         	
         	else if(e.getKey() == e.S){
-        		e.stopEvent();
         		var view = me.desktop.view;
         		if(view.itemcontextmenu.isHidden() === false){
+        			e.stopEvent();
         			view.onItemApplyToStartMenu();
         			view.itemcontextmenu.hide();
         		}
         	}
         	
         	else if(e.getKey() == e.M){
-        		e.stopEvent();
         		var view = me.desktop.view;
         		if(view.itemcontextmenu.isHidden() === false && view.itemcontextmenu.items.get(3).isDisabled() === false){
+        			e.stopEvent();
         			view.onItemRename();
         			view.itemcontextmenu.hide();
         		}
         	}
         	
         	else if(e.getKey() == e.R){
-        		e.stopEvent();
         		var view = me.desktop.view;
         		if(view.itemcontextmenu.isHidden() === false && view.itemcontextmenu.items.get(6).isDisabled() === false){
+        			e.stopEvent();
         			view.onItemDetail();
         			view.itemcontextmenu.hide();
         		}
