@@ -142,11 +142,11 @@
 }
 
 .ux-taskbar .x-toolbar {
-    height: 28px;
+    height: 30px;
 }
 
 .ux-taskbar {
-    height: 28px;
+    height: 30px;
     padding: 0;
 }
 
@@ -230,7 +230,7 @@
     background-image: url("/Leetop/desktop/resources/images/appbutton_mouseover_bg.png");
 }
 
-.x-item-selected{
+.ux-desktop-shortcut-selected {
     background: #efefef url("/Leetop/desktop/resources/images/appbutton_mouseover_bg.png");
     cursor: pointer;
     text-align: center;
@@ -238,16 +238,6 @@
     width: 60px;
     height: 60px;
     overflow: hidden;
-}
-
-.ux-desktop-shortcut-selected {
-	cursor: pointer;
-    text-align: center;
-    margin: 10px;
-    width: 60px;
-    height: 60px;
-    overflow: hidden;
-    background-image:  url("/Leetop/desktop/resources/images/appbutton_mouseover_bg.png");
 }
 
 .ux-desktop-shortcut-icon {
@@ -281,6 +271,85 @@
     text-decoration: underline;
 }
 
+.ux-backgroud-item-over{
+	border:1px solid #dddddd;
+    background: #efefef url(/Leetop/desktop/resources/images/item_over.gif) repeat-x left top;
+    padding: 4px;
+}
+
+.ux-backgroud-item-selected{
+	background: #eff5fb url(/Leetop/desktop/resources/images/item_selected.gif) repeat-y right bottom;
+    border:1px solid #99bbe8;
+    padding: 4px;
+}
+.ux-backgroud-item-selected .ux-backgroud-item{
+    background:transparent;
+}
+
+.ux-backgroud-item{
+    background: #dddddd;
+    padding: 3px;
+    padding-bottom: 3px;
+}
+.ux-backgroud-item img{
+    height: 85px;
+    width: 134px;
+}
+
+.ux-backgroud-item-wrap{
+	border:1px solid #dddde8;
+    float: left;
+    margin: 4px;
+    margin-right: 0;
+    padding: 5px;
+}
+.ux-backgroud-item-wrap span{
+	display: block;
+    overflow: hidden;
+    text-align: center;
+    white-space:nowrap !important; 
+    text-overflow: ellipsis;
+}
+
+.ux-theme-item-over{
+	border:1px solid #dddddd;
+    background: #efefef url(/Leetop/desktop/resources/images/item_over.gif) repeat-x left top;
+    padding: 4px;
+}
+
+.ux-theme-item-selected{
+	background: #eff5fb url(/Leetop/desktop/resources/images/item_selected.gif) repeat-y right bottom;
+    border:1px solid #99bbe8;
+    padding: 4px;
+}
+.ux-theme-item-selected .ux-backgroud-item{
+    background:transparent;
+}
+
+.ux-theme-item{
+    background: #dddddd;
+    padding: 3px;
+    padding-bottom: 3px;
+}
+.ux-theme-item img{
+    height: 110px;
+    width: 186px;
+}
+
+.ux-theme-item-wrap{
+	border:1px solid #dddde8;
+    float: left;
+    margin: 4px;
+    margin-right: 0;
+    padding: 5px;
+}
+.ux-theme-item-wrap span{
+	display: block;
+    overflow: hidden;
+    text-align: center;
+    white-space:nowrap !important; 
+    text-overflow: ellipsis;
+}
 
 /*----------------------------------------------------
     Various icon classes

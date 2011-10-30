@@ -40,7 +40,12 @@ Ext.define('Leetop.lib.StartMenu', {
             cls: 'ux-start-menu-body',
             border: false,
             floating: false,
-            items: menu
+            autoScroll : true,
+            items: menu,
+            listeners : {
+            	add : me.onMenuItemAdd,
+            	scope : me
+            }
         });
         me.menu.layout.align = 'stretch';
 		
@@ -100,6 +105,16 @@ Ext.define('Leetop.lib.StartMenu', {
     addMenuItem: function() {
         var cmp = this.menu;
         cmp.add.apply(cmp, arguments);
+    },
+    
+    onMenuItemAdd : function(bar,item){
+    	var me = this;
+    	Ext.apply(item,{ 
+            tooltip: { text: item.text, align: 'bl-tl' },
+            handler: function(){
+            	me.app.createWindow(item.module,item.text);
+            }
+        });
     },
 
     addToolItem: function() {
