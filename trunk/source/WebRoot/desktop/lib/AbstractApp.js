@@ -88,66 +88,109 @@ Ext.define('Leetop.lib.AbstractApp', {
         		Ext.Msg.alert('系统提示', '查询程序!');
         	}
         	
+        	else if(e.getKey() == e.O){
+        		e.stopEvent();
+        		var view = me.desktop.view;
+        		if(view.itemcontextmenu.isHidden() === false){
+        			view.onItemEnter();
+        			view.itemcontextmenu.hide();
+        		}
+        	}
+        	else if(e.getKey() == e.D){
+        		e.stopEvent();
+        		var view = me.desktop.view;
+        		if(view.itemcontextmenu.isHidden() === false){
+        			view.onItemRemove();
+        			view.itemcontextmenu.hide();
+        		}
+        	}
+        	
+        	else if(e.getKey() == e.Q){
+        		e.stopEvent();
+        		var view = me.desktop.view;
+        		if(view.itemcontextmenu.isHidden() === false){
+        			view.onItemApplyToQuickStart();
+        			view.itemcontextmenu.hide();
+        		}
+        	}
+        	
+        	else if(e.getKey() == e.S){
+        		e.stopEvent();
+        		var view = me.desktop.view;
+        		if(view.itemcontextmenu.isHidden() === false){
+        			view.onItemApplyToStartMenu();
+        			view.itemcontextmenu.hide();
+        		}
+        	}
+        	
+        	else if(e.getKey() == e.M){
+        		e.stopEvent();
+        		var view = me.desktop.view;
+        		if(view.itemcontextmenu.isHidden() === false && view.itemcontextmenu.items.get(3).isDisabled() === false){
+        			view.onItemRename();
+        			view.itemcontextmenu.hide();
+        		}
+        	}
+        	
+        	else if(e.getKey() == e.R){
+        		e.stopEvent();
+        		var view = me.desktop.view;
+        		if(view.itemcontextmenu.isHidden() === false && view.itemcontextmenu.items.get(6).isDisabled() === false){
+        			view.onItemDetail();
+        			view.itemcontextmenu.hide();
+        		}
+        	}
+        	
         	else if(e.getKey() == e.F2){
 	    		e.stopEvent();
-	    		var view = me.desktop.view,nodes = view.getSelectedNodes();
-	    		if(nodes.length == 1){
-	    			var shortcut = Ext.fly(Ext.fly(nodes[0]).first('div.ux-desktop-shortcut-text')).first('div.'+me.desktop.view.labelSelector),
-	    			record = view.getSelectedRecords()[0],editor = view.editor;
-	    			if(shortcut){
-			    		editor.startEdit(shortcut, record.data[editor.dataIndex]);
-			    		editor.activeRecord = record;
-			    	}
-	    		}
+	    		me.desktop.view.onItemRename();
 	    	}
 	    	else if(e.getKey() == e.DELETE){
 	    		e.stopEvent();
-	    		var view = me.desktop.view,records = view.getSelectedRecords();
-	    		if(records.length > 0){
-		    		Ext.Msg.confirm('系统提示', '您确定删除'+ (records.length > 1 ? '这' + records.length + '个应用程序' : records[0].data.name )+'么?',function(btn){
-		    			if(btn == 'yes'){
-		    				view.store.remove(records);
-		    			}
-		    		});
-	    		}
+	    		me.desktop.view.onItemRemove();
 	    	}
 	    	else if(e.getKey() == e.UP || e.getKey() == e.DOWN || 
 	    			e.getKey() == e.LEFT || e.getKey() == e.RIGHT || 
-	    			e.getKey() == e.HOME || e.getKey() == e.END || e.getKey() == e.ENTER){
+	    			e.getKey() == e.HOME || e.getKey() == e.END || 
+	    			e.getKey() == e.ENTER){
 	    		e.stopEvent();
-	    		var view = me.desktop.view,records = view.getSelectedRecords(),selector = view.getSelectionModel();
+	    		var view = me.desktop.view,records = view.selModel.getSelection(),selector = view.getSelectionModel(),index;
 	    		if(records.length > 0){
-		    		var index = view.store.indexOf(records[records.length - 1]);
-	    			if( e.getKey() == e.UP ){
-		    			if((index - 1) >= 0 ){
-		    				selector.select((index - 1));
-		    			}
-	    			}else if(e.getKey() == e.DOWN){
-	    				if((index + 1) <= view.store.getCount() - 1 ){
-		    				selector.select((index + 1));
-		    			}
-	    			}else if(e.getKey() == e.LEFT || e.getKey() == e.RIGHT){
-	    				var rows = me.desktop.view.shortcutsCols;
-	    				if(e.getKey() == e.LEFT){
-		    				if((index - rows) >= 0){
-			    				selector.select((index - rows));
-			    			}
-		    			}else if(e.getKey() == e.RIGHT){
-		    				if((index + rows) <= view.store.getCount() - 1 ){
-			    				selector.select((index + rows));
-			    			}
-		    			}
-	    			}else if(e.getKey() == e.HOME){
-		    			selector.select(0);
-	    			}else if(e.getKey() == e.END){
+	    			index = view.store.indexOf(records[records.length - 1]);
+	    		}else {
+	    			index = -2;
+	    		}
+    			if( e.getKey() == e.UP ){
+	    			if((index - 1) >= 0 ){
+	    				selector.select((index - 1));
+	    			}else{
 	    				selector.select(view.store.getCount() - 1);
-	    			}else if(e.getKey() == e.ENTER){
-	    				Ext.each(records,function(record){
-	    					me.desktop.onShortcutItemClick(view,record,null,view.store.indexOf(record));
-	    				});
 	    			}
+    			}else if(e.getKey() == e.DOWN){
+    				if((index + 1) <= view.store.getCount() - 1 && index + 1  > 0){
+	    				selector.select((index + 1));
+	    			}else{
+	    				selector.select(0);
+	    			}
+    			}else if(e.getKey() == e.LEFT || e.getKey() == e.RIGHT){
+    				var rows = me.desktop.view.shortcutsCols;
+    				if(e.getKey() == e.LEFT){
+	    				if((index - rows) >= 0){
+		    				selector.select((index - rows));
+		    			}
+	    			}else if(e.getKey() == e.RIGHT){
+	    				if((index + rows) <= view.store.getCount() - 1 && index + 1  > 0){
+		    				selector.select((index + rows));
+		    			}
+	    			}
+    			}else if(e.getKey() == e.HOME){
+	    			selector.select(0);
+    			}else if(e.getKey() == e.END){
+    				selector.select(view.store.getCount() - 1);
+    			}else if(e.getKey() == e.ENTER){
+    				view.onItemEnter();
     			}
-	    	}
+			}
         },me);
         Ext.EventManager.on(window, 'beforeunload', me.onUnload, me);
 
@@ -222,16 +265,89 @@ Ext.define('Leetop.lib.AbstractApp', {
     
     createWindow : function(module,text){
     	var me = this;
-    	if(!Ext.ClassManager.isCreated(module)){
-	    		Ext.require(module,function(){
-	    			var win = Ext.create(module,{app : me}).createWindow();
-	    		});
-    	}else{
-    		var win = Ext.create(module,{app : me}).createWindow();
-    		if (win) {
+    	try{
+    		Ext.Msg.el.fadeIn({
+			    endOpacity: 1, //can be any value between 0 and 1 (e.g. .5)
+			    easing: 'easeOut',
+			    duration: 2000
+			});
+	        Ext.Msg.show({
+	           title : '系统提示',
+	           msg: '<br/>正在加载'+ text +'...',
+	           width:300,
+	           wait :true,
+	           modal : false,
+	           waitConfig: {interval:200},
+	           icon:'ext-mb-download'
+	       });
+		   me.restoreMsg();
+    	   var win = Ext.create(module,{app : me}).createWindow();
+		   if (win) {
 	            me.desktop.restoreWindow(win);
-	        }
-    	}
+	       }
+	       Ext.Msg.show({
+	           title : '系统提示',
+	           msg: text +'加载成功!',
+	           width:300,
+	           modal : false,
+	           icon:Ext.MessageBox.INFO,
+	           buttons : Ext.Msg.OK
+	        });
+	       Ext.Msg.toFront();
+	       me.restoreMsg();
+	    }catch(e){
+	    	Ext.Msg.show({
+	           title : '系统提示',
+	           msg: '加载'+ (text ? text : '') +'失败!</br>详细信息：'+ (e.msg.indexOf('404') > 0 ? '加载远程JavaScript文件失败!' : e.msg),
+	           width:300,
+	           modal : false,
+	           icon:Ext.MessageBox.ERROR,
+	           buttons : Ext.Msg.OK
+	        });
+	    	me.restoreMsg();
+	    }finally{
+	    	/*Ext.Msg.el.on('mouseover',function(){
+	    		Ext.Msg.el.stopFx();
+	    		Ext.Msg.el.fadeIn({
+				    endOpacity: 1, //can be any value between 0 and 1 (e.g. .5)
+				    easing: 'easeOut',
+				    duration: 2000
+				});
+				Ext.Msg.el.un('mouseover');
+	    	});
+	    	Ext.Msg.el.on('mouseout',function(){
+	    		Ext.Msg.el.fadeOut({
+				    endOpacity: 0, //can be any value between 0 and 1 (e.g. .5)
+				    easing: 'easeOut',
+				    duration: 1000
+				});
+				Ext.Msg.el.un('mouseout');
+	    	});
+	    	window.setTimeout(function(){
+	    		Ext.Msg.el.fadeOut({
+				    endOpacity: 0, //can be any value between 0 and 1 (e.g. .5)
+				    easing: 'easeOut',
+				    duration: 2000
+				});
+				//Ext.Msg.hide();
+		    },1000);*/
+	    	
+	    	window.setTimeout(function(){
+	    		/*Ext.Msg.el.fadeOut({
+				    endOpacity: 0, 
+				    easing: 'easeOut',
+				    duration: 2000
+				});*/
+				Ext.Msg.hide();
+		    },3000);
+	    }
+    },
+    
+    restoreMsg : function(){
+       var me = this;
+       var x = me.desktop.getWidth() - 300 - 15;
+       var y = me.desktop.getHeight() - me.desktop.taskbar.getHeight() - Ext.MessageBox.getHeight() - 8;
+       Ext.MessageBox.setPagePosition(x,y);
     },
 
     getModule : function(name) {

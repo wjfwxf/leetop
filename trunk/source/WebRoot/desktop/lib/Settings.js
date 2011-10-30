@@ -16,8 +16,13 @@ Ext.define('Leetop.lib.Settings', {
         'Ext.layout.container.Border',
 
         'Leetop.lib.Wallpaper',
-
-        'Leetop.module.WallpaperModel'
+        
+		'Leetop.lib.theme.ThemeView',
+		'Leetop.lib.theme.ThemeModel',
+        'Leetop.module.WallpaperModel',
+        'Leetop.lib.theme.BackgroudView',
+        'Leetop.lib.theme.BackgroudModel'
+        
     ],
 
     //layout: 'anchor',
@@ -46,40 +51,46 @@ Ext.define('Leetop.lib.Settings', {
         me.items = [{
         	xtype : 'tabpanel',
         	items : [{
-        		xtype : 'panel',
-        		title : '主题设置',
-                anchor: '0 -30',
-                border: false,
-        		layout: 'anchor',
-        		items : [{
-	                     anchor: '0 -30',
-	                     border: false,
-	                     layout: 'border',
-	                     items: [
-	                         me.tree,
-	                         {
-	                             xtype: 'panel',
-	                             title: '预览',
-	                             region: 'center',
-	                             layout: 'fit',
-	                             items: [ me.preview ]
-	                         }
-	                     ]
-	                 },
-	                 {
-	                     xtype: 'checkbox',
-	                     boxLabel: '强制填充',
-	                     checked: me.stretch,
-	                     listeners: {
-	                         change: function (comp) {
-	                             me.stretch = comp.checked;
-	                         }
-	                     }
-	                 }
-	             ]
-        	},{
-        		title : '高级'
-        	}]
+		        		title : '主题',
+		        		layout : 'fit',
+		        		items : [me.createThemeView()]
+			         },{
+		        		xtype : 'panel',
+		        		title : '背景图片(树状)',
+		                anchor: '0 -30',
+		                border: false,
+		        		layout: 'anchor',
+		        		items : [{
+			                     anchor: '0 -30',
+			                     border: false,
+			                     layout: 'border',
+			                     items: [
+			                         me.tree,
+			                         {
+			                             xtype: 'panel',
+			                             title: '预览',
+			                             region: 'center',
+			                             layout: 'fit',
+			                             items: [ me.preview ]
+			                         }
+			                     ]
+			                 },
+			                 {
+			                     xtype: 'checkbox',
+			                     boxLabel: '强制填充',
+			                     checked: me.stretch,
+			                     listeners: {
+			                         change: function (comp) {
+			                             me.stretch = comp.checked;
+			                         }
+			                     }
+			                 }
+			             ]
+		        	},{
+		        		title : '背景图片(卡片)',
+		        		layout : 'fit',
+		        		items : [me.createBackgroudView()]
+		        	}]
         }];
         /*me.items = [
             {
@@ -110,6 +121,122 @@ Ext.define('Leetop.lib.Settings', {
         ];*/
 
         me.callParent();
+    },
+    createBackgroudStore : function(){
+    	var me = this;
+    	function child(name){
+    		return {name : name,url : me.buildBackgroudURL(name),text : me.getTextOfWallpaper(name) };
+    	}
+    	me.backgroudStore = Ext.create('Ext.data.Store', {
+                model: 'Leetop.lib.theme.BackgroudModel',
+                data: [{
+	                	name : 'None',
+	                	url : me.buildBackgroudURL(''),
+	                	text : 'None'
+		               },
+		               child('Blue-Sencha.jpg'),
+                       child('Dark-Sencha.jpg'),
+                       child('Wood-Sencha.jpg'),
+                       child('blue.jpg'),
+                       child('desk.jpg'),
+                       child('desktop.jpg'),
+                       child('desktop2.jpg'),
+                       child('sky.jpg'),
+                       child('cloud.jpg'),
+                       child('winodw 7.jpg'),
+                       child('South Pole.jpg')]
+            });
+        return me.backgroudStore;
+    },
+    
+    createThemeStore : function(){
+    	var me = this;
+    	function child(name,theme,background){
+    		return {name : name,theme : theme,url : me.buildBackgroudURL(theme + '.jpg'),background :me.buildBackgroudURL(background) };
+    	}
+    	me.themeStore = Ext.create('Ext.data.Store', {
+                model: 'Leetop.lib.theme.ThemeModel',
+                data: [child('默认风格','ext-all','cloud.jpg'),
+		               child('现代风格','ext-all-access','sky.jpg'),
+                       child('银灰风格','ext-all-gray','desktop2.jpg'),
+                       child('默认风格','ext-all','cloud.jpg'),
+		               child('现代风格','ext-all-access','sky.jpg'),
+                       child('银灰风格','ext-all-gray','desktop2.jpg')]
+            });
+        return me.themeStore;
+    },
+    
+    buildBackgroudURL : function(img){
+    	var me = this;
+    	if (img) {
+            return 'desktop/wallpapers/' + img;
+        } else {
+            return Ext.BLANK_IMAGE_URL;
+        }
+    },
+    
+    createBackgroudView : function(){
+    	var me = this;
+    	me.backgroudView = Ext.create('Leetop.lib.theme.BackgroudView',{
+    		store : me.createBackgroudStore(),
+    		listeners : {
+    			itemclick : me.onBackgroundItemClick,
+    			afterrender: { fn: me.onBackgroudViewRender, delay: 100 },
+    			scope : me
+    		}
+    	});
+    	return me.backgroudView;
+    },
+    
+    createThemeView : function(){
+    	var me = this;
+    	me.themeView = Ext.create('Leetop.lib.theme.ThemeView',{
+    		store : me.createThemeStore(),
+    		listeners : {
+    			itemclick : me.onThemeItemClick,
+    			afterrender: { fn: me.onThemeViewRender, delay: 100 },
+    			scope : me
+    		}
+    	});
+    	return me.themeView;
+    },
+    
+    onThemeItemClick : function(view,record){
+    	var me = this,theme = me.desktop.theme;
+    	if(theme !== record.data.theme){
+    		Ext.util.CSS.swapStyleSheet('theme',ctx+'/lib/ext4/resources/css/'+ record.data.theme +'.css');
+    		me.desktop.theme = record.data.theme;
+    	}
+    	me.selected = record.data.background;
+    	me.desktop.setWallpaper(record.data.background);
+    },
+    
+    onThemeViewRender: function () {
+        var me = this,s = me.desktop.theme;
+        if (s) {
+            var record = me.backgroudStore.findRecord('theme',s);
+            if(record){
+            	me.themeView.getSelectionModel().select(me.themeStore.indexOf(record));
+            }
+        }
+    },
+    
+    onBackgroudViewRender: function () {
+        var me = this,s = me.desktop.getWallpaper();
+        if (s) {
+            var record = me.backgroudStore.findRecord('url',s);
+            if(record){
+            	me.backgroudView.getSelectionModel().select(me.backgroudStore.indexOf(record));
+            }
+        }
+    },
+    
+    onBackgroundItemClick : function(view,record){
+    	var me = this;
+    	me.selected = record.data.url;
+        if (me.selected) {
+            me.desktop.setWallpaper(me.selected, me.stretch);
+        }
     },
 
     createTree : function() {
@@ -158,7 +285,7 @@ Ext.define('Leetop.lib.Settings', {
 
         return tree;
     },
-
+    
     getTextOfWallpaper: function (path) {
         var text = path, slash = path.lastIndexOf('/');
         if (slash >= 0) {

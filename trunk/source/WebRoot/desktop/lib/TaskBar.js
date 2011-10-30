@@ -165,7 +165,7 @@ Ext.define('Leetop.lib.TaskBar', {
     },
 
     onQuickStartClick: function (btn) {
-        this.app.createWindow(btn.module);
+        this.app.createWindow(btn.module,btn.name);
     },
     
     

@@ -23,28 +23,12 @@ Ext.define('Leetop.App', {
     activWindows : [],
 
     getModules : function(){
-        return [
-            /*new Leetop.module.VideoWindow(),
-            new Leetop.module.Blockalanche(),
-            new Leetop.module.SystemStatus(),
-            new Leetop.module.GridWindow(),
-            new Leetop.module.TabWindow(),
-            new Leetop.module.AccordionWindow(),
-            new Leetop.module.Notepad(),*/
-            {
-	            text: 'Notepad',
-	            iconCls:'notepad',
-	            module : 'Leetop.module.Notepad',
-//	            /handler : this.createWindow,
-	            scope: this
-	        }/*,
-            new Leetop.module.BogusMenuModule(),
-            new Leetop.module.BogusModule(),
-            new Leetop.module.Douban(),
-            new Leetop.module.QQMap(),
-            new Leetop.browser.Browser(),
-            new Leetop.module.QQMusic()*/
-        ];
+        return [{
+		            text: 'Notepad',
+		            iconCls:'notepad',
+		            module : 'Leetop.module.Notepad',
+		            scope: this
+		        }];
     },
     
     shortcutsData : [
@@ -170,6 +154,8 @@ Ext.define('Leetop.App', {
             contextMenuItems: [
                 /* { text: '个性化', handler: me.onSettings, scope: me } */
             ],
+            
+            theme : theme,
 
             shortcuts: Ext.create('Ext.data.Store', {
                 model: 'Leetop.lib.ShortcutModel',

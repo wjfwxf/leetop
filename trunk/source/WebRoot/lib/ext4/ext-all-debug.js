@@ -4510,7 +4510,6 @@ var Base = Ext.Base = function() {};
             if (this.numPendingFiles === 0) {
                 this.refreshQueue();
             }
-            this.isFileLoaded[className] = false;
             this.hasFileLoadError = true;
             Ext.Error.raise({
                 sourceClass: "Ext.Loader",

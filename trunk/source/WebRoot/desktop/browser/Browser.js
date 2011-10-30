@@ -76,7 +76,7 @@ Ext.define('Leetop.browser.Browser', {
 	doAccess : function(http){
 		var me = this;
 		http = http  ? http : me.blankAddress;
-		if(http.indexOf(me.protocol) == -1){
+		if(http.indexOf(me.protocol) == -1 && http.indexOf('https') == -1){
 			http = me.protocol + http;
 		}
 		me.address.setRawValue(http);

@@ -100,7 +100,6 @@ Ext.define('Leetop.lib.Desktop', {
     	var me = this;
     	Ext.MessageBox.updateProgress(0.8,'80%','<br/>正在初始化桌面图标...');
     	me.view = Ext.create('Leetop.lib.View',{
-            xtype: 'desktopview',
             desktop : me,
             store : me.shortcuts,
             app : me.app
@@ -456,7 +455,9 @@ Ext.define('Leetop.lib.Desktop', {
     },
 
     setWallpaper: function (wallpaper, stretch) {
-        this.wallpaper.setWallpaper(wallpaper, stretch);
+    	if(this.getWallpaper() !== wallpaper){
+        	this.wallpaper.setWallpaper(wallpaper, stretch);
+        }
         return this;
     },
 
