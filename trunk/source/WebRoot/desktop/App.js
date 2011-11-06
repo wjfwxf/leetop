@@ -14,10 +14,7 @@ Ext.define('Leetop.App', {
     ],
     
     init: function() {
-        // custom logic before getXYZ methods get called...
         this.callParent();
-
-        // now ready...
     },
     
     activWindows : [],
@@ -40,7 +37,7 @@ Ext.define('Leetop.App', {
 					}, {
 						name : '腾讯微博',
 						iconCls : 't-shortcut',
-						module : 'Leetop.module.Notepad',
+						module : 'Leetop.module.QQWeiBo',
 						index : 2
 					}, {
 						name : '浏览器',
@@ -141,6 +138,16 @@ Ext.define('Leetop.App', {
 						name : '系统状态',
 						iconCls : 'cpu-shortcut',
 						module : 'Leetop.module.SystemStatus',
+						index : 22
+					},{
+						name : '谷歌翻译',
+						iconCls : 'plugin-shortcut',
+						module : 'Leetop.module.GoogleTranslater',
+						index : 22
+					},{
+						name : '欢乐斗地主',
+						iconCls : 'plugin-shortcut',
+						module : 'Leetop.module.DouDiZhu',
 						index : 22
 					}
                 ],

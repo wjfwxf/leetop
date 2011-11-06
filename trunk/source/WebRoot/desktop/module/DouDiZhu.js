@@ -1,17 +1,16 @@
 
-Ext.define('Leetop.module.QQMap', {
+Ext.define('Leetop.module.DouDiZhu', {
     extend: 'Leetop.lib.Module',
 
-    id:'qqmap',
-    windowId: 'qqmap-window',
+    id:'qq_doudizhu',
+    windowId: 'qq_doudizhu_win',
 
     tipWidth: 160,
     tipHeight: 96,
 
     init : function(){
         this.launcher = {
-            text: 'QQ地图',
-            iconCls:'map-small-shortcut',
+            text: '欢乐斗地主',
             handler : this.createWindow,
             scope: this
         };
@@ -24,10 +23,10 @@ Ext.define('Leetop.module.QQMap', {
         if (!win) {
             win = desktop.createWindow({
                 id: me.windowId,
-                title: 'QQ地图',
-                width: desktop.view.getWidth() - 100,
-                height: desktop.view.getHeight() - 100,
-                iconCls: 'map-small-shortcut',
+                title: '欢乐斗地主',
+                iconCls : me.app.createSmallIconCls('plugin-shortcut'),
+                width: desktop.view.getWidth() -100,
+                height: desktop.view.getHeight() -50,
                 animCollapse: false,
                 maximizable : true,
                 border: false,
@@ -37,14 +36,14 @@ Ext.define('Leetop.module.QQMap', {
                     	xtype : 'panel',
                     	html : '<iframe id="qqmap_iframe" scrolling="auto" ' + 
                     		'frameborder="no" hidefocus="" allowtransparency="true" ' + 
-                    		'src="http://map.qq.com/?ADTAG=tr.web2.button.a"' +  
+                    		'src="http://yxs.qq.com/"' +  
                     		'style="width: 100%; height: 100%;">'
                     }
                 ],
                 listeners : {
                 	'afterrender' : function(){
                 		var panel = win.items.get(0);
-                		panel.el.mask('正在加载QQ地图,请稍候...');
+                		panel.el.mask('正在欢乐斗地主,请稍候...');
                 		panel.body.first('iframe', true).onload = function(){
                 			panel.el.unmask();
                 		};

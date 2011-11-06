@@ -202,9 +202,9 @@ Ext.define('Leetop.lib.TaskBar', {
 
     addTaskButton: function(win) {
     	var me = this;
-    	var smallIconCls = me.app.createSmallIconCls(win.iconCls);
         var config = {
-            iconCls: smallIconCls,
+            //iconCls: smallIconCls,
+        	iconCls : win.iconCls,
             enableToggle: true,
             toggleGroup: 'all',
             width: 140,

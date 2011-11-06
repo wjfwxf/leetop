@@ -7,12 +7,17 @@ Ext.define('Leetop.browser.Browser', {
 
     tipWidth: 160,
     tipHeight: 96,
-    protocol : 'http://',
+    
+    standardProtocol : 'http://',
+    
+    securityProtocol : 'https://',
+    
     blankAddress :  'http://www.baidu.com',
     
     requires: [
-    	'Leetop.browser.AddressField',
+    	'Leetop.browser.Address',
     	'Leetop.browser.History',
+    	'Leetop.browser.Page',
     	'Ext.ux.TabReorderer',
     	'Ext.ux.TabScrollerMenu'
     ],
@@ -26,7 +31,7 @@ Ext.define('Leetop.browser.Browser', {
         },
         this.searcher = {
 			name : '百度',
-			http : 'http://www.baidu.com/s?wd='
+			url : 'http://www.baidu.com/s?wd='
         };
     },
 	
@@ -40,125 +45,58 @@ Ext.define('Leetop.browser.Browser', {
 	
 	doRefresh : function(){
 		var me = this;
-		me.doAccess(me.activeAccess.http);
+		me.getActivePage().refresh();
 	},
     
 	doStop : function(){
 		var me = this;
-		me.progressbar.reset();
-		me.progressbar.updateText('取消加载'+me.activeAccess.http);
-		me.getActiveTab().loadstatus = 'cancel';
-		me.getActiveTab().setIconCls('x-browser-page-icon');
-		window.stop();
+		me.getActivePage().stop();
 	},
 	
 	doSearch : function(){
 		var me = this;
-		me.doAccess(encodeURI( me.searcher.http + me.address.getValue()));
+		me.access( me.searcher.url + me.address.getValue());
 	},
 	
 	onLoad : function(p){
 		var me = this;
-		p.loadTime = new Date().getTime();
-		p.loadstatus = 'complete';
-		p.loadtimes = p.loadTime - p.accessTime;
-		p.setIconCls('x-browser-page-icon');
-		if(me.getActiveTab() == p){
-			me.progressbar.reset();
-			me.progressbar.updateProgress(1,'完成加载'+me.activeAccess.http+',耗时:'+(p.loadtimes)+'ms.');
+		if(me.getActivePage() == p){
 			if(!me.address.getValue()){
-				me.address.setValue(me.activeAccess.http);
+				me.address.setValue(p.src);
 			}
 			me.address.onLoad();
 		}
 	},
 	
-	doAccess : function(http){
+	access : function(url){
 		var me = this;
-		http = http  ? http : me.blankAddress;
-		if(http.indexOf(me.protocol) == -1 && http.indexOf('https') == -1){
-			http = me.protocol + http;
+		url = url || me.blankAddress;
+		if(url.indexOf(me.standardProtocol) == -1 && url.indexOf(me.securityProtocol) == -1){
+			url = me.standardProtocol + url;
 		}
-		me.address.setRawValue(http);
-		var record = me.historys.getById(http + 'ID');
-		if (record) {
-			record.set('date', new Date());
-			me.activeAccess = {
-				id : record.get('id'),
-				http : record.get('http'),
-				date : record.get('date'),
-				title : record.get('title')
-			};
-			me.access(me.getActiveTab());
-		} else {
-			me.initAccess(me.getActiveTab(),http);
-		}
+		me.address.setRawValue(url);
+		me.getActivePage().access(url);
 	},
 	
-	initAccess : function(p,http){
-		var me = this;
-		me.getHttpTitle(http, p);
-	},
-	
-	getHttpTitle : function(http,p){
-		var me = this;
-		me.progressbar.wait({
-			interval : 500,
-			increment : 15,
-			text : '正在获取' + http + '的标题...'
-		});
-		Ext.Ajax.request({
-		    url: ctx+'/servlet/BrowserServlet',
-		    params: {
-		        http : http
-		    },
-		    success: function(response){
-		    	me.addHistory(response.responseText,http);
-		    	me.access(p);
-		    },
-		    failure : function(){
-		    	me.addHistory('未知标题',http);
-		    	me.access(p);
-		    }
+	updateTaskButtonTooltip : function(title,url){
+		this.app.getDesktop().getWindow(this.windowId).taskButton.setTooltip({
+			title : title,
+			text : url || title,
+			align: 'bl-tl'
 		});
 	},
 	
-	addHistory : function(title,http){
-		var me = this;
-		me.activeAccess = {
-			id : http + 'ID',
-			http : http,
-			date : new Date(),
-			title : title
-		};
-		me.historys.add(me.activeAccess);
+	updateTaskButtonText : function(title){
+		this.app.getDesktop().getWindow(this.windowId).taskButton.setText(title);
 	},
 	
-	access : function(p){
-		var me = this;
-		p.loadstatus = 'loading';
-		p.setIconCls('x-browser-load-icon');
-		me.address.onLoading();
-		me.progressbar.updateText('正在加载'+me.activeAccess.http+'...');
-		p.accessTime = new Date().getTime();
-		/*var subtitle = me.activeAccess.title.substring(0,12);
-		if(me.activeAccess.title > 12){
-			subtitle += "...";
-		}
-		p.setTitle(subtitle);*/
-		p.setTitle(me.activeAccess.title);
-		p.tabTip = me.activeAccess.title;
-		var iframe = me.getBodyIframe(p);
-		if(!iframe){
-			iframe = me.initBodyIframe(p);
-		}
-		iframe.src = me.activeAccess.http;
+	updateAddressValue : function(value){
+		this.address.setRawValue(value);
 	},
 	
     createWindow : function(){
         var me = this, desktop = me.app.getDesktop(),
-            win = desktop.getWindow(me.windowId);
-            Ext.QuickTips.init();
+        win = desktop.getWindow(me.windowId);
 		me.historys = me.createHistorys();	
         if (!win) {
             win = desktop.createWindow({
@@ -173,88 +111,28 @@ Ext.define('Leetop.browser.Browser', {
                 layout : 'border',
                 items: [
                     me.createNavBar(),
-                    me.createTabPanel(),
-                    me.createStatusBar()
+                    me.createTabPanel()
                 ]
             });
         }
         win.show();
-        me.doAccess();
+        me.access(me.customeURL);
         return win;
     },
     
-    getBodyIframe : function(p){
-    	return p.body.first('iframe', true);
-    },
-    
-    initBodyIframe : function(p){
-    	var me = this;
-    	p.update('<iframe id="qqmap_iframe" scrolling="auto" ' + 
-            		'frameborder="no" hidefocus="" allowtransparency="true" ' + 
-            		'style="width: 100%; height: 100%;">');
-        var iframe = me.getBodyIframe(p);
-		iframe.onload = function(){
-			me.onLoad(p);
-		};
-		return iframe;
-    },
-    getActiveTab : function(){
+    getActivePage : function(){
 		return this.tab.getActiveTab();
 	},
-    createNewTab : function(){
-    	var me = this;
-	    var panel = Ext.create('Ext.Panel',{
-			xtype : 'panel',
-			iconCls : 'x-browser-page-icon',
-			title : '新建选项卡',
-			closable : true,
-    		listeners : {
-    			'activate' : function(p){
-    				var iframe = me.getBodyIframe(p);
-    				if(iframe){
-    					me.address.setRawValue(iframe.src);
-    					if(p.loadstatus == 'complete'){
-    						me.progressbar.reset();
-    						me.progressbar.updateProgress(1,'完成加载'+iframe.src+',耗时:'+(p.loadtimes)+'ms.');
-	    					me.address.onLoad();
-	    				}else if(p.loadstatus == 'loading'){
-	    					me.progressbar.wait({
-								interval: 500,
-								increment: 15,
-					            text: '正在加载'+iframe.src+'...'
-					        });
-	    					me.address.onLoading();
-	    				}else if(p.loadstatus == 'init'){
-	    					me.progressbar.updateProgress(0,'准备就绪....');
-	    					me.address.onInit();
-	    				}else if(p.loadstatus == 'cancel'){
-	    					me.progressbar.updateProgress(0,'取消加载'+iframe.src);
-	    					me.address.onInit();
-	    				}
-    				}else{
-    					me.address.setRawValue('');
-    					me.address.onInit();
-    					me.progressbar.updateProgress(0,'准备就绪...');
-    				}
-    				
-    			}
-    		}
-		});
-		return panel;
-    },
     
     createPlusTab : function(){
     	var me = this;
     	return {
     		xtype : 'panel',
     		iconCls : 'x-browser-add-icon',
-    		title : '新建选项卡',
-    		tabTip : '添加选项卡',
     		reorderable : false,
     		listeners : {
     			'activate' : function(){
-    				var panel = me.createNewTab();
-    				panel.loadstatus = 'init';
+    				var panel = Ext.create('Leetop.browser.Page',{browser : me});
     				me.address.onInit();
 					me.tab.insert(me.tab.items.length - 1,panel);
 					me.tab.setActiveTab(panel);
@@ -266,18 +144,17 @@ Ext.define('Leetop.browser.Browser', {
     createTabPanel : function(){
     	var me = this;
     	me.tab = Ext.create('Ext.TabPanel',{
-                    	xtype : 'tabpanel',
                     	activItem : 1,
                     	region : 'center',
                     	split  : true,
                     	tabWidth : 115,
                     	enableTabScroll : true,
                     	animScroll  : true,
-                    	minTabWidth : 115,
+                    	minTabWidth : 35,
                     	autoScroll : false,
                     	resizeTabs : true,
                     	items :[
-                    		me.createNewTab(),
+                    		Ext.create('Leetop.browser.Page',{browser : me}),
 	                    	me.createPlusTab()
                     	],
 				        plugins: [
@@ -287,44 +164,23 @@ Ext.define('Leetop.browser.Browser', {
         return me.tab;       
     },
     
-	createAddressField : function(){
+	createAddress : function(){
 		var me = this;
-		me.address = Ext.create('Leetop.browser.AddressField',{
-            		store : me.createHistorys(),
+		me.address = Ext.create('Leetop.browser.Address',{
+            		store : me.historys,
             		browser : me,
             		flex : 1,
             		cls : 'x-browser-white',
             		displayField : 'domain',
-            		valueField : 'http',
+            		valueField : 'url',
             		triggerAction : 'all',
             		listeners : {
             			'select' : function(){
-            				me.doAccess(this.getValue());
+            				me.access(this.getValue());
             			}
             		}
                 });
         return me.address;     
-	},
-	
-	createProgressBar : function(){
-		var me = this;
-		me.progressbar = Ext.create('Ext.ProgressBar', {
-		       text:'初始化...',
-		       flex : 1
-		});
-		return me.progressbar;
-	},
-	
-	createStatusBar : function(){
-		var me = this;
-		return {
-			xtype : 'panel',
-			region : 'south',
-			autoHeight : true,
-			border : false,
-    		split : true,
-    		items : [me.createProgressBar()]
-		};
 	},
 	
     
@@ -347,7 +203,7 @@ Ext.define('Leetop.browser.Browser', {
 	                	text : '前进'
 	                }
 	            },' ',
-	            me.createAddressField(),
+	            me.createAddress(),
 	            ' ',
 	            {
 	            	iconCls : 'x-browser-home-icon',
