@@ -153,6 +153,7 @@ Ext.define('Leetop.lib.AbstractApp', {
 	    			e.getKey() == e.LEFT || e.getKey() == e.RIGHT || 
 	    			e.getKey() == e.HOME || e.getKey() == e.END || 
 	    			e.getKey() == e.ENTER){
+	    		var key = e.getKey();
 	    		e.stopEvent();
 	    		var view = me.desktop.view,records = view.selModel.getSelection(),selector = view.getSelectionModel(),index;
 	    		if(records.length > 0){
@@ -160,34 +161,34 @@ Ext.define('Leetop.lib.AbstractApp', {
 	    		}else {
 	    			index = -2;
 	    		}
-    			if( e.getKey() == e.UP ){
+    			if( key == e.UP ){
 	    			if((index - 1) >= 0 ){
 	    				selector.select((index - 1));
 	    			}else{
 	    				selector.select(view.store.getCount() - 1);
 	    			}
-    			}else if(e.getKey() == e.DOWN){
+    			}else if(key == e.DOWN){
     				if((index + 1) <= view.store.getCount() - 1 && index + 1  > 0){
 	    				selector.select((index + 1));
 	    			}else{
 	    				selector.select(0);
 	    			}
-    			}else if(e.getKey() == e.LEFT || e.getKey() == e.RIGHT){
+    			}else if(key == e.LEFT || e.getKey() == e.RIGHT){
     				var rows = me.desktop.view.shortcutsCols;
     				if(e.getKey() == e.LEFT){
 	    				if((index - rows) >= 0){
 		    				selector.select((index - rows));
 		    			}
-	    			}else if(e.getKey() == e.RIGHT){
+	    			}else if(key == e.RIGHT){
 	    				if((index + rows) <= view.store.getCount() - 1 && index + 1  > 0){
 		    				selector.select((index + rows));
 		    			}
 	    			}
-    			}else if(e.getKey() == e.HOME){
+    			}else if(key == e.HOME){
 	    			selector.select(0);
-    			}else if(e.getKey() == e.END){
+    			}else if(key == e.END){
     				selector.select(view.store.getCount() - 1);
-    			}else if(e.getKey() == e.ENTER){
+    			}else if(key == e.ENTER){
     				view.onItemEnter();
     			}
 			}

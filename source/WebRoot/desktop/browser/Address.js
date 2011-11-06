@@ -1,7 +1,7 @@
-Ext.define('Leetop.browser.AddressField', {
+Ext.define('Leetop.browser.Address', {
     extend: 'Ext.form.field.ComboBox',
     
-    alias: 'widget.addressfield',
+    alias: 'widget.address',
     
     trigger1Cls: Ext.baseCSSPrefix + 'form-list-trigger',
     
@@ -25,18 +25,25 @@ Ext.define('Leetop.browser.AddressField', {
         shadow: 'sides',
         getInnerTpl: function() {
                     return '<div class="search-item">' +
-                        		'<h3><span>{[Ext.Date.format(values.date, "Y-m-j H:s")]}</span>{title} -- {http}</h3>' +
+                        		'<h3><span>{[Ext.Date.format(values.date, "Y-m-j H:s")]}</span>{title} -- {url}</h3>' +
                         	'</div>';
                 }
     },
     
     initComponent: function(){
-        this.callParent(arguments);
-        this.on('specialkey', function(f, e){
+    	var me = this;
+        me.callParent(arguments);
+        me.on('specialkey', function(f, e){
             if(e.getKey() == e.ENTER){
-                this.onTrigger2Click();
+                me.onTrigger2Click();
             }
         }, this);
+        me.on('select',function(){
+        	me.browser.access(me.getValue());
+        });
+        me.on('focus',function(){
+        	me.selectText();
+        });
     },
     
     afterRender: function(){
@@ -47,7 +54,7 @@ Ext.define('Leetop.browser.AddressField', {
     
     onTrigger2Click : function(){
         var me = this;
-        me.browser.doAccess(me.getValue());
+        me.browser.access(me.getValue());
     },
     
     

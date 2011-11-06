@@ -483,14 +483,13 @@ Ext.define('Leetop.lib.Desktop', {
                 isWindow: true,
                 constrainHeader: true,
                 minimizable: true,
-                maximizable: true
+                maximizable: true,
+                iconCls : config.iconCls || 'icon-app'
             });
-
         cls = cls || Ext.window.Window;
         win = me.add(new cls(cfg));
 
         me.windows.add(win);
-
         win.taskButton = me.taskbar.addTaskButton(win);
         win.animateTarget = win.taskButton.el;
 
