@@ -1,14 +1,16 @@
-<%@ page language="java" pageEncoding="UTF-8"%>
+<%@ page language="java" pageEncoding="UTF-8" import="java.net.InetAddress" %>
 <%
 	request.setAttribute("ctx",request.getContextPath());
 	request.setAttribute("theme","ext-all");
 	request.setAttribute("isDebug","-debug");
+	String serverPath = request.getScheme()+"://"+InetAddress.getLocalHost().getHostAddress()+":"+request.getServerPort()+request.getContextPath()+"/";
 %>
 <html>
   <head>
 	<title>系统桌面</title>
 	<script>
-		var startLoadingTime = new Date().getTime();
+		var startLoadingTime = new Date().getTime(),myDesktopApp,
+			ctx = "${ctx}",theme = "${theme}",serverPath = "<%=serverPath%>";
 	</script>
 	<link rel="shortcut icon" href="${ctx}/desktop/resources/images/taskbar/favicon.ico"/>
 	<link rel="stylesheet" id="themecss" type="text/css" href="${ctx}/lib/ext4/resources/css/${theme}.css" />
@@ -25,10 +27,7 @@
             "Ext" : "${ctx}/lib/ext4",
             "Leetop" : "${ctx}/desktop"
         });
-
-        Ext.require(["Leetop.App"]);
-		
-        var myDesktopApp,ctx = "${ctx}",theme = "${theme}";
+        
         Ext.onReady(function () {
         	Ext.MessageBox.show({
                 title : "正在加载桌面, 请稍候...",
@@ -40,7 +39,7 @@
                 icon:"ext-mb-download"
             });
         	Ext.MessageBox.updateProgress(0.2);
-            myDesktopApp = new Leetop.App({
+            myDesktopApp = Ext.create("Leetop.App",{
             	user : "李球"
             });
             window.setTimeout(function(){

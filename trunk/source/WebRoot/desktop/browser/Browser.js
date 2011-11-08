@@ -19,7 +19,8 @@ Ext.define('Leetop.browser.Browser', {
     	'Leetop.browser.History',
     	'Leetop.browser.Page',
     	'Ext.ux.TabReorderer',
-    	'Ext.ux.TabScrollerMenu'
+    	'Ext.ux.TabScrollerMenu',
+    	'Ext.ux.TabCloseMenu'
     ],
 
     init : function(){
@@ -123,6 +124,16 @@ Ext.define('Leetop.browser.Browser', {
     getActivePage : function(){
 		return this.tab.getActiveTab();
 	},
+	
+	createNewPage : function(url){
+		var me = this;
+		panel = Ext.create('Leetop.browser.Page',{browser : me,url : Ext.isString(url) ? url : null});
+		me.address.onInit();
+		me.tab.insert(me.tab.items.length - 2,panel);
+		me.tab.setActiveTab(panel);
+		me.address.focus();
+		me.address.selectText();
+	},
     
     createPlusTab : function(){
     	var me = this;
@@ -131,12 +142,8 @@ Ext.define('Leetop.browser.Browser', {
     		iconCls : 'x-browser-add-icon',
     		reorderable : false,
     		listeners : {
-    			'activate' : function(){
-    				var panel = Ext.create('Leetop.browser.Page',{browser : me});
-    				me.address.onInit();
-					me.tab.insert(me.tab.items.length - 1,panel);
-					me.tab.setActiveTab(panel);
-    			}
+    			activate : me.createNewPage,
+    			scope : me
     		}
     	};
     },
@@ -144,7 +151,7 @@ Ext.define('Leetop.browser.Browser', {
     createTabPanel : function(){
     	var me = this;
     	me.tab = Ext.create('Ext.TabPanel',{
-                    	activItem : 1,
+                    	activItem : 0,
                     	region : 'center',
                     	split  : true,
                     	tabWidth : 115,
@@ -155,10 +162,25 @@ Ext.define('Leetop.browser.Browser', {
                     	resizeTabs : true,
                     	items :[
                     		Ext.create('Leetop.browser.Page',{browser : me}),
+                    		{	xtype : 'panel',
+                    		 	hidden : true,
+                    		 	closeable : false,
+                    		 	listeners : {
+                    				activate : function(){
+                    					me.tab.setActiveTab(me.tab.items.getCount() - 4);
+                    				}
+                    		 	}
+                    		},
 	                    	me.createPlusTab()
                     	],
 				        plugins: [
-				        	Ext.create('Ext.ux.TabReorderer')
+				        	Ext.create('Ext.ux.TabReorderer'),
+				        	Ext.create('Ext.ux.TabCloseMenu',{
+			        		  	closeTabText: '关闭标签页',
+			        		  	closeOthersTabsText: '关闭其他标签页',
+			        		  	closeAllTabsText: '关闭所有标签页',
+			        		  	beforeMenu : me.createTabBeforeCM()
+			        		  })
 				        ]
                     });
         return me.tab;       
@@ -184,6 +206,32 @@ Ext.define('Leetop.browser.Browser', {
 	},
 	
     
+	createTabBeforeCM : function(){
+		var me = this;
+		return [{
+					text : '新建标签页',
+					handler : function(){
+						me.createNewPage();
+					}
+				},{
+					text : '重新载入标签页',
+					handler : me.doRefresh,
+					scope : me
+				},{
+					text : '复制标签页',
+					handler : function(){
+						me.createNewPage(me.getActivePage().url);
+					}
+				},'-',{
+					text : '添加到收藏夹'
+				},{
+					text : '设置为主页',
+					handler : function(){
+						me.blankAddress = me.getActivePage().url;
+					}
+				}];
+	},
+	
     createNavBar : function(){
     	var me = this;
     	return {
@@ -207,6 +255,9 @@ Ext.define('Leetop.browser.Browser', {
 	            ' ',
 	            {
 	            	iconCls : 'x-browser-home-icon',
+	            	handler : function(){
+	            		me.access();
+	            	},
 	                tooltip : {
 	                	text : '首页'
 	                }	

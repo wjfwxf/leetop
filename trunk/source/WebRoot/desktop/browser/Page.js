@@ -22,12 +22,15 @@ Ext.define('Leetop.browser.Page',{
 	
 	initComponent : function(){
 		var me = this;
-		
 		me.IframePanel = Ext.create('Ext.panel.Panel',{
 			border : false,
 			region : 'center',
-			//html : me.buildIframeHTML(),
-			split : true
+			//html : me.url ? me.buildIframeHTML(me.url) : null,
+			split : true,
+			listeners : {
+				afterrender : me.onAfterRender,
+				scope : me
+			}
 		});
 		
 		me.progressbar = Ext.create('Ext.ProgressBar',{
@@ -51,9 +54,18 @@ Ext.define('Leetop.browser.Page',{
 		me.callParent();
 	},
 	
+	onAfterRender : function(){
+		var me = this;
+		if(me.url){
+			me.access(me.url);
+		}
+	},
+	
 	onBeforDestroy : function(){
-		//var me = this;
-		//me.ownerCt.remove(me);
+		var me = this;
+		if(me.browser.tab.items.getCount() == 2){
+			me.browser.app.getDesktop().getActiveWindow().destroy();
+		}
 	},
 	
 	onActivate : function(text){
@@ -62,9 +74,8 @@ Ext.define('Leetop.browser.Page',{
 	},
 	
 	buildIframeHTML : function(){
-		return '<iframe  scrolling="no" ' + 
-        		'frameborder="no" hidefocus="" allowtransparency="true" ' + 
-        		'style="width: 100%; height: 100%;">';
+		return '<iframe  scrolling="no" frameborder="no" hidefocus="" ' +
+				'allowtransparency="true" style="width: 100%; height: 100%;">';
 	},
 	
 	onIframeLoad : function(){
@@ -97,6 +108,10 @@ Ext.define('Leetop.browser.Page',{
 				this.setTitle(Ext.String.ellipsis(title,12,true));
 			},me);
 		};
+    },
+    
+    isLoading : function(){
+    	return (this.status == this.statusTypes.LOADING);
     },
     
     updatePageInfo : function(title,url){
@@ -152,27 +167,28 @@ Ext.define('Leetop.browser.Page',{
 	getHttpTitle : function(url,callbak,scope){
 		var me = this;
 		Ext.Ajax.request({
-		    url: ctx+'/borwser/getTitle',
+		    url: ctx+'/borwser/html',
 		    params: {
-		        http : url
+		        url : url
 		    },
 		    success: function(response){
-		    	callbak.call(scope,response.responseText,url,true);
-		    	//me.doHttpAccess(response.responseText,url,true);
+		    	callbak.call(scope,Ext.JSON.encode(response.responseText),url,true);
 		    },
 		    failure : function(){
 		    	callbak.call(scope,'未知标题',url,true);
-		    	//me.doHttpAccess('未知标题',url,true);
 		    }
 		});
 	},
 	
 	access : function(url){
 		var me = this;
-		me.startLoadTime = new Date().getTime();
-		if(!me.getIframe()){
-			me.initIframe();
+		if(me.isLoading()){
+			me.stop();
 		}
+		me.startLoadTime = new Date().getTime();
+		/*if(!me.getIframe()){
+			me.initIframe();
+		}*/
 		me.browser.address.onLoading();
 		var record = me.browser.historys.getById(url + 'ID');
 		if(record){
@@ -182,15 +198,16 @@ Ext.define('Leetop.browser.Page',{
 			me.progressbar.wait({
 				interval : 500,
 				increment : 15,
-				text : '正在获取' + url + '的标题...'
+				//text : '正在获取' + url + '的标题...'
+				text : '正在连接服务器...'
 			});
 			me.getHttpTitle(url,me.doHttpAccess,me);
 		}
 	},
 	
-	doHttpAccess : function(title,url,newAccess){
+	doHttpAccess : function(object,url,newAccess){
 		var me = this;
-		if(newAccess){
+		/*if(newAccess){
 			me.progressbar.updateText('正在加载' + url + '...');
 			me.accessRecord = {
 				id : url + 'ID',
@@ -199,17 +216,18 @@ Ext.define('Leetop.browser.Page',{
 				title : title
 			};
 			me.browser.historys.add(me.accessRecord);
-		}else{
+		}else{*/
 			me.progressbar.wait({
 				interval : 500,
 				increment : 15,
 				text : '正在加载' + url + '...'
 			});
-		}
+		//}
 		me.setIconCls('x-browser-load-icon');
-		me.setTitle(Ext.String.ellipsis(title,12,true));
+		me.setTitle(Ext.String.ellipsis(object.title,12,true));
 		me.browser.updateTaskButtonText(me.title);
-		me.browser.updateTaskButtonTooltip(title,url);
+		me.browser.updateTaskButtonTooltip(object.title,url);
+		me.IframePanel.update(object.html);
 		me.setStatus(me.statusTypes.LOADING);
 		me.setURL(url);
 	}

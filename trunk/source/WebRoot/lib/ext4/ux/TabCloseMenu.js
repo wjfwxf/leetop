@@ -21,7 +21,7 @@ Ext.define('Ext.tab.TabCloseMenu', {
      * The text for closing the current tab. Defaults to <tt>'Close Tab'</tt>.
      */
     closeTabText: 'Close Tab',
-
+    
     /**
      * @cfg {Boolean} showCloseOthers
      * Indicates whether to show the 'Close Others' option. Defaults to <tt>true</tt>.
@@ -100,49 +100,56 @@ Ext.define('Ext.tab.TabCloseMenu', {
             tab = me.tabBar.getChildByElement(target),
             index = me.tabBar.items.indexOf(tab);
         me.item = me.tabPanel.getComponent(index);
-        me.tabpanel.setActiveTab(me.item);
-        menu.child('*[text="' + me.closeTabText + '"]').setDisabled(!me.item.closable);
-
-        if (me.showCloseAll || me.showCloseOthers) {
-            me.tabPanel.items.each(function(item) {
-                if (item.closable) {
-                    disableAll = false;
-                    if (item != me.item) {
-                        disableOthers = false;
-                        return false;
-                    }
-                }
-                return true;
-            });
-
-            if (me.showCloseAll) {
-                menu.child('*[text="' + me.closeAllTabsText + '"]').setDisabled(disableAll);
-            }
-
-            if (me.showCloseOthers) {
-                menu.child('*[text="' + me.closeOthersTabsText + '"]').setDisabled(disableOthers);
-            }
+        if(index !== me.tabBar.items.getCount() - 1){
+	        me.tabPanel.setActiveTab(me.item);
+	        menu.child('*[text="' + me.closeTabText + '"]').setDisabled(!me.item.closable);
+	
+	        if (me.showCloseAll || me.showCloseOthers) {
+	            me.tabPanel.items.each(function(item) {
+	                if (item.closable) {
+	                    disableAll = false;
+	                    if (item != me.item) {
+	                        disableOthers = false;
+	                        return false;
+	                    }
+	                }
+	                return true;
+	            });
+	
+	            if (me.showCloseAll) {
+	                menu.child('*[text="' + me.closeAllTabsText + '"]').setDisabled(disableAll);
+	            }
+	
+	            if (me.showCloseOthers) {
+	                menu.child('*[text="' + me.closeOthersTabsText + '"]').setDisabled(disableOthers);
+	            }
+	        }
+	
+	        event.preventDefault();
+	        me.fireEvent('beforemenu', menu, me.item, me);
+	
+	        menu.showAt(event.getXY());
         }
-
-        event.preventDefault();
-        me.fireEvent('beforemenu', menu, me.item, me);
-
-        menu.showAt(event.getXY());
     },
 
     createMenu : function() {
         var me = this;
 
         if (!me.menu) {
-            var items = [{
+        	var items = [];
+        	if(me.beforeMenu){
+        		items.push(me.beforeMenu);
+        		items.push('-');
+        	}
+            items.push({
                 text: me.closeTabText,
                 scope: me,
                 handler: me.onClose
-            }];
+            });
 
-            if (me.showCloseAll || me.showCloseOthers) {
-                items.push('-');
-            }
+            //if (me.showCloseAll || me.showCloseOthers) {
+             //   items.push('-');
+            //}
 
             if (me.showCloseOthers) {
                 items.push({
@@ -170,6 +177,7 @@ Ext.define('Ext.tab.TabCloseMenu', {
 
             me.menu = Ext.create('Ext.menu.Menu', {
                 items: items,
+                width : 157,
                 listeners: {
                     hide: me.onHideMenu,
                     scope: me
