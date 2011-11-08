@@ -13,7 +13,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>BrowserServlet</servlet-name>
-    <url-pattern>/servlet/BrowserServlet</url-pattern>
+    <url-pattern>/borwser/html</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ImageServlet</servlet-name>

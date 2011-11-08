@@ -32,24 +32,24 @@ public class BrowserServlet extends HttpServlet {
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String http = request.getParameter("http");
+		String url = request.getParameter("url");
 		try {
 			response.setCharacterEncoding("utf-8");
-			response.getWriter().write(this.getTitle(http));
+			response.getWriter().write(this.html(url));
 		} catch (Exception e) {
-			response.getWriter().write("未知标题");
+			response.getWriter().write( "{ title : 未知标题"+ 
+					" html : 无法访问改页面}");
 		} finally {
 			response.getWriter().close();
 		}
 	}
 
-	private String getTitle(String http) {
-		String title = "未知标题";
-		boolean flag = true;
+	private String html(String uri) {
+		String title = "未知标题",html = "";
 		try {
 			StringBuffer sb = new StringBuffer();
 			String encode = "utf-8";
-			URL url = new URL(http);
+			URL url = new URL(uri);
 			URLConnection urlcon = url.openConnection();
 			String contentType = urlcon.getContentType();
 			String[] contentTypeArray = contentType.split(";");
@@ -70,21 +70,16 @@ public class BrowserServlet extends HttpServlet {
 			if (sb.indexOf("<title>") > 0) {
 				title = sb.substring(sb.indexOf("<title>") + 7,
 						sb.indexOf("</title>"));
-			}else{
-				if (flag) {
-					String domain = http.substring(0,6);
-					if (!domain.startsWith("www.")) {
-						this.getTitle("http://www." + http);
-					}
-				}
-				flag = false;
 			}
+			html = sb.toString();
 			br.close();
 			isr.close();
 		} catch (Exception e) {
-			return title;
+			return "{ title : " + title + 
+					" html : " + html + "}";
 		}
-		return title;
+		return "{ title : " + title + 
+		" html : " + html + "}";
 	}
 
 	public void init() throws ServletException {

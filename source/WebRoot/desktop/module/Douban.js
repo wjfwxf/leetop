@@ -44,11 +44,8 @@ Ext.define('Leetop.module.Douban', {
                 items: [
                     {
                     	xtype : 'panel',
-                    	html : '<iframe id="douoban_iframe" scrolling="auto" ' + 
-                    		'frameborder="no" hidefocus="" allowtransparency="true" ' + 
-                    		'src="http://douban.fm/partner/webqq" name="%7B%22appid%22%3A3402%2C%22webqqkey%22%3A0.002194722502731783%2C%22webqqdomain%22%3A%22web.qq.com%22%7D"' +  
-                    		//主要是这个豆瓣FM的链接
-                    		'style="width: 100%; height: 100%;">'
+                    	html : '<iframe id="douoban_iframe" scrolling="auto" frameborder="no" hidefocus="" ' +
+                    			'allowtransparency="true" src="http://douban.fm/partner/webqq" style="width: 100%; height: 100%;">'
                     }
                 ],
                 listeners : {
