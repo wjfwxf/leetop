@@ -15,15 +15,6 @@ public class BrowserServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	public BrowserServlet() {
-		super();
-	}
-
-	public void destroy() {
-		super.destroy(); // Just puts "destroy" string in log
-		// Put your code here
-	}
-
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -32,57 +23,61 @@ public class BrowserServlet extends HttpServlet {
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String url = request.getParameter("url");
+		String uri = request.getParameter("url");
 		try {
-			response.setCharacterEncoding("utf-8");
-			response.getWriter().write(this.html(url));
-		} catch (Exception e) {
-			response.getWriter().write( "{ title : 未知标题"+ 
-					" html : 无法访问改页面}");
-		} finally {
-			response.getWriter().close();
-		}
-	}
-
-	private String html(String uri) {
-		String title = "未知标题",html = "";
-		try {
+			String html = "";
 			StringBuffer sb = new StringBuffer();
 			String encode = "utf-8";
 			URL url = new URL(uri);
 			URLConnection urlcon = url.openConnection();
 			String contentType = urlcon.getContentType();
-			String[] contentTypeArray = contentType.split(";");
-			if (contentTypeArray.length >= 2) {
-				String chartset = contentTypeArray[1];
-				int charsetIndex = chartset.indexOf("=");
-				if (charsetIndex > 0) {
-					encode = chartset.substring(charsetIndex + 1,
-							chartset.length());
+			if (contentType != null && contentType.length() > 0) {
+				String[] contentTypeArray = contentType.split(";");
+				if (contentTypeArray.length >= 2) {
+					String chartset = contentTypeArray[1];
+					int charsetIndex = chartset.indexOf("=");
+					if (charsetIndex > 0) {
+						encode = chartset.substring(charsetIndex + 1,
+								chartset.length());
+					}
 				}
 			}
-			InputStreamReader isr = new InputStreamReader(urlcon.getInputStream(), encode);
+			response.setContentType("text/html;charset=" + encode);
+			response.setCharacterEncoding(encode);
+			InputStreamReader isr = new InputStreamReader(
+					urlcon.getInputStream(), encode);
 			BufferedReader br = new BufferedReader(isr);
 			String str;
 			while ((str = br.readLine()) != null) {
 				sb.append(str);
 			}
-			if (sb.indexOf("<title>") > 0) {
-				title = sb.substring(sb.indexOf("<title>") + 7,
-						sb.indexOf("</title>"));
-			}
 			html = sb.toString();
 			br.close();
 			isr.close();
+			html += this.initLinksTarget();
+			response.getWriter().write(html);
 		} catch (Exception e) {
-			return "{ title : " + title + 
-					" html : " + html + "}";
+			response.getWriter().write(buildErrorHTML(uri,"无法连接互联网."));
+		} finally {
+			response.getWriter().close();
 		}
-		return "{ title : " + title + 
-		" html : " + html + "}";
 	}
 
-	public void init() throws ServletException {
+	public String initLinksTarget() {
+		return "<script type='text/javascript'>"
+				+ "var links = document.getElementsByName('a');"
+				+ "for( var i = 0; i < links.length; i++ ){"
+				+ "var link = links[i];alert(link.target);"
+				+ "link.target = '_self'}" + "</script";
 	}
 
+	public String buildErrorHTML(String url, String message) {
+		return "<html><head><title>无法访问  "+url+" </title><style type='text/css'>"
+				+ "body{background-color: #ccc;font-size: 12px;}"
+				+ ".errorPanel{border: #ccc 1px  solid;margin: 20 40 40 0;width: 800;"
+				+ "background-color: #fff;text-align: left;padding: 10 40;}</style></head> "
+				+ "<body><div align='center'><div class='errorPanel'>"
+				+ "<h2>无法访问 " + url + "</h2><span>错误信息:" + message + "</span>"
+				+ "</div></div></body></html>";
+	}
 }
