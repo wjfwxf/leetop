@@ -11,6 +11,7 @@
     <servlet-name>ImageServlet</servlet-name>
     <servlet-class>servlet.ImageServlet</servlet-class>
   </servlet>
+
   <servlet-mapping>
     <servlet-name>BrowserServlet</servlet-name>
     <url-pattern>/borwser/html</url-pattern>
