@@ -87,7 +87,7 @@ Ext.define('Leetop.desktop.Base', {
         	
         	else if(e.getKey() == e.O){
         		var view = me.desktop.view;
-        		if(view.itemcontextmenu.isHidden() === false){
+        		if(view.isItemContextHidden() === false){
         			e.stopEvent();
         			view.onItemEnter();
         			view.itemcontextmenu.hide();
@@ -95,7 +95,7 @@ Ext.define('Leetop.desktop.Base', {
         	}
         	else if(e.getKey() == e.D){
         		var view = me.desktop.view;
-        		if(view.itemcontextmenu.isHidden() === false){
+        		if(view.isItemContextHidden() === false){
         			e.stopEvent();
         			view.onItemRemove();
         			view.itemcontextmenu.hide();
@@ -104,7 +104,7 @@ Ext.define('Leetop.desktop.Base', {
         	
         	else if(e.getKey() == e.Q){
         		var view = me.desktop.view;
-        		if(view.itemcontextmenu.isHidden() === false){
+        		if(view.isItemContextHidden() === false){
         			e.stopEvent();
         			view.onItemApplyToQuickStart();
         			view.itemcontextmenu.hide();
@@ -113,7 +113,7 @@ Ext.define('Leetop.desktop.Base', {
         	
         	else if(e.getKey() == e.S){
         		var view = me.desktop.view;
-        		if(view.itemcontextmenu.isHidden() === false){
+        		if(view.isItemContextHidden() === false){
         			e.stopEvent();
         			view.onItemApplyToStartMenu();
         			view.itemcontextmenu.hide();
@@ -122,7 +122,7 @@ Ext.define('Leetop.desktop.Base', {
         	
         	else if(e.getKey() == e.M){
         		var view = me.desktop.view;
-        		if(view.itemcontextmenu.isHidden() === false && view.itemcontextmenu.items.get(3).isDisabled() === false){
+        		if(view.isItemContextHidden() === false && view.itemcontextmenu.items.get(3).isDisabled() === false){
         			e.stopEvent();
         			view.onItemRename();
         			view.itemcontextmenu.hide();
@@ -131,7 +131,7 @@ Ext.define('Leetop.desktop.Base', {
         	
         	else if(e.getKey() == e.R){
         		var view = me.desktop.view;
-        		if(view.itemcontextmenu.isHidden() === false && view.itemcontextmenu.items.get(6).isDisabled() === false){
+        		if(view.isItemContextHidden() === false && view.itemcontextmenu.items.get(6).isDisabled() === false){
         			e.stopEvent();
         			view.onItemDetail();
         			view.itemcontextmenu.hide();

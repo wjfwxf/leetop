@@ -8,6 +8,8 @@ Ext.define('Leetop.browser.Browser', {
     tipWidth: 160,
     tipHeight: 96,
     
+    closeAction : 'destory',
+    
     standardProtocol : 'http://',
     
     securityProtocol : 'https://',
@@ -276,7 +278,7 @@ Ext.define('Leetop.browser.Browser', {
 	            },'-',{
 	            	iconCls : 'x-browser-plugin-icon',
 	            	handler : function(){
-	            		me.log.debug(this.iconCls,true);
+	            		me.log.debug(new Date().getTime());
 	            	},
 	                tooltip : {
 	                	text : '插件管理'

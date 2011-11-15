@@ -58,5 +58,22 @@
     background-image:url( /Leetop/classes/resources/images/terminal.png ) !important;
 }
 
+.icon-console-error-show {
+    background-image:url( /Leetop/classes/resources/images/console_error_show.png ) !important;
+}
+.icon-console-update-show {
+    background-image:url( /Leetop/classes/resources/images/console_update_show.png ) !important;
+}
+.icon-console-clear {
+    background-image:url( /Leetop/classes/resources/images/console_clear.png ) !important;
+}
+
+.icon-console-lock {
+    background-image:url( /Leetop/classes/resources/images/console_lock.png ) !important;
+}
+
+.icon-console-unlock {
+    background-image:url( /Leetop/classes/resources/images/console_unlock.png ) !important;
+}
 
 
