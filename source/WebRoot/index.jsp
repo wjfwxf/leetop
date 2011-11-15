@@ -20,9 +20,9 @@
 	            "Leetop" : "${ctx}/classes"
 	        });
 	        Ext.Loader.require(["Leetop.system.logger.LoggerFactory",
-	                      "Leetop.desktop.Desktop",
-	                      "Leetop.system.Console"
-	                     ]);
+			                    "Leetop.desktop.Desktop",
+			                    "Leetop.system.Console"
+			                   ]);
 	        
 	        Ext.onReady(function () {
 	        	Ext.MessageBox.show({
