@@ -1,7 +1,9 @@
 if(window.Leetop){
 	window.Leetop = undefined;
 }
-window.Leetop = {};
+window.Leetop = {
+	
+};
 
 Leetop.Bootstrap = {
 	
