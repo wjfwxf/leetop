@@ -50,10 +50,11 @@ Ext.define('Leetop.system.logger.Logger',{
     
     info : function(text,show){
     	var me = this;
-    	Leetop.Console.updateConsole(me.format(me.type.INFO,text));
     	if(show){
     		me.showMsgBox(text,me.icon[me.type.INFO]);
     	}
+    	Leetop.Console.updateConsole(me.format(me.type.INFO,text));
+    	
     },
     
     error : function(text,show){

@@ -286,6 +286,10 @@ Ext.define('Leetop.desktop.View', {
     	me.initDD();
     },
     
+    isItemContextHidden  :function(){
+    	return this.itemcontextmenu.isHidden();
+    },
+    
     initShortcutsDD : function(node){
     	var me = this;
     	var ds = new Ext.dd.DragSource(node.id, 
