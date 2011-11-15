@@ -205,7 +205,7 @@ Ext.define('Leetop.desktop.Desktop', {
                         text:'控&nbsp;制&nbsp;台',
                         iconCls:'icon-console',
                         handler: function(){
-                       		 Leetop.Console.show();
+                       		 Leetop.Console.open();
                         }
                     },'-',
                     {

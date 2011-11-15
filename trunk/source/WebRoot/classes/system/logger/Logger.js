@@ -59,7 +59,7 @@ Ext.define('Leetop.system.logger.Logger',{
     
     error : function(text,show){
     	var me = this;
-    	Leetop.Console.updateConsole(me.format(me.type.ERROR,text));
+    	Leetop.Console.output(me.format(me.type.ERROR,text));
     	if(show){
     		me.showMsgBox(text,me.icon[me.type.ERROR]);
     	}
@@ -75,7 +75,7 @@ Ext.define('Leetop.system.logger.Logger',{
     
     debug : function(text,show){
     	var me = this;
-    	Leetop.Console.updateConsole(me.format(me.type.DEBUG,text));
+    	Leetop.Console.println(me.format(me.type.DEBUG,text));
     	if(show){
     		me.showMsgBox(text,me.icon[me.type.DEBUG]);
     	}
