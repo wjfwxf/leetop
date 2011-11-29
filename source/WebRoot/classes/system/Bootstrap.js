@@ -9,7 +9,7 @@ Leetop.Bootstrap = {
 	
 	SHORTCUTMARK : "<link rel='shortcut icon' href='{url}' />",
 	
-	CSSMARK : "<link rel='stylesheet' id='{id}' type='text/css' href='{url}' onload='alert(11);'/>",
+	CSSMARK : "<link rel='stylesheet' id='{id}' type='text/css' href='{url}' />",
 	
 	JAVASCRIPTMARK : "<script type='text/javascript' src='{url}' onload='Leetop.Bootstrap.onScriptLoad()'></script>",
 	
@@ -48,7 +48,16 @@ Leetop.Bootstrap = {
 	
 	loadJavaScript : function(script){
 		Leetop.Bootstrap.pendFiles ++ ;
-		document.write(Leetop.Bootstrap.JAVASCRIPTMARK.replace('{url}',script.url));
+		var js = document.createElement('script');
+		js.src = script.url;
+		js.onload = Leetop.Bootstrap.onScriptLoad;
+		js.onreadystatechange = function(){
+			if(js.readyState == 'loaded'){
+				Leetop.Bootstrap.onScriptLoad();
+			}
+		};
+		document.getElementsByTagName('head')[0].appendChild(js);
+		//document.write(Leetop.Bootstrap.JAVASCRIPTMARK.replace('{url}',script.url));
 	},
 	
 	loadShortcut : function(shorcut){
