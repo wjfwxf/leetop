@@ -2,6 +2,14 @@ Ext.define('Leetop.system.Console',{
 	
 	extend : 'Leetop.system.Module',
 	
+	showWhenUpdate : false,
+	
+	showWhenError : false,
+	
+	output : [],
+	
+	lockScroll : false,
+	
 	init : function(){
 		var me = this;
 		if(!me.win){
@@ -32,6 +40,7 @@ Ext.define('Leetop.system.Console',{
 				width : 700,
 				borde : false,
 				closeAction : 'hide',
+				maxsizable : true,
 				plain:true,
 				tbar : ['->',{
 					iconCls : 'icon-console-clear',
@@ -88,7 +97,7 @@ Ext.define('Leetop.system.Console',{
 								this.setText('锁定滚动');
 								this.setTooltip('锁定滚动');
 								me.lockScroll = false;
-								me.scrollConsole();
+								me.scroll();
 							}
 						}
 					}
@@ -102,15 +111,7 @@ Ext.define('Leetop.system.Console',{
 			return me.win;
 	},
 	
-	showWhenUpdate : false,
-	
-	showWhenError : false,
-	
-	output : [],
-	
-	lockScroll : false,
-	
-	scrollConsole : function(){
+	scroll : function(){
 		var me = this;
 		if(me.console.body){
 			me.console.body.dom.scrollTop = me.console.body.dom.scrollHeight;
@@ -118,8 +119,7 @@ Ext.define('Leetop.system.Console',{
 	},
 	
 	onShow : function(){
-		var me = this;
-		me.console.body.dom.scrollTop = me.console.body.dom.scrollHeight;
+		this.scroll();
 	},
 	
 	println : function(output){
@@ -127,7 +127,7 @@ Ext.define('Leetop.system.Console',{
 		me.output.push(me.format(output));
 		me.console.update(me.output.join(''));
 		if(!me.lockScroll){
-			me.scrollConsole();
+			me.scroll();
 		}
 		if(me.showWhenUpdate){
 			if(me.win.isHidden()){
