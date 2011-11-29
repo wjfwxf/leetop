@@ -77,7 +77,7 @@
 </head>
 <body>
 
-    <a href="http://www.sencha.com" target="_blank" alt="Powered by Ext JS"
+    <a href="http://leetop.5d6d.com/" target="_blank" alt="Powered by Ext JS"
        id="poweredby" >
        <div>
        </div>
